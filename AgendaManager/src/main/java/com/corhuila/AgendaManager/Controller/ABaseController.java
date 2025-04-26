@@ -31,7 +31,7 @@ public abstract class ABaseController<T extends ABaseEntity, S extends IBaseServ
     public ResponseEntity<ApiResponseDTO<T>> show(@PathVariable Long id) {
         try {
             T entity = service.findById(id);
-            return ResponseEntity.ok(new ApiResponseDTO<T>("Registro encontrado", entity, true));
+            return ResponseEntity.ok(new ApiResponseDTO<T>("Registro #"+id+" encontrado", entity, true));
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(new ApiResponseDTO<T>(e.getMessage(), null, false));
         }
@@ -52,7 +52,7 @@ public abstract class ABaseController<T extends ABaseEntity, S extends IBaseServ
     public ResponseEntity<ApiResponseDTO<T>> update(@PathVariable Long id, @RequestBody T entity) {
         try {
             service.update(id, entity);
-            return ResponseEntity.ok(new ApiResponseDTO<T>("Datos actualizados", null, true));
+            return ResponseEntity.ok(new ApiResponseDTO<T>("Datos del ID #"+id+" actualizados", null, true));
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(new ApiResponseDTO<T>(e.getMessage(), null, false));
         }
@@ -62,7 +62,7 @@ public abstract class ABaseController<T extends ABaseEntity, S extends IBaseServ
     public ResponseEntity<ApiResponseDTO<T>> delete(@PathVariable Long id) {
         try {
             service.delete(id);
-            return ResponseEntity.ok(new ApiResponseDTO<T>("Registro eliminado", null, true));
+            return ResponseEntity.ok(new ApiResponseDTO<T>("Registro #"+id+" eliminado", null, true));
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(new ApiResponseDTO<T>(e.getMessage(), null, false));
         }

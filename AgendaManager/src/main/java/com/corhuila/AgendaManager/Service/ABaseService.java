@@ -28,7 +28,7 @@ public abstract class ABaseService<T extends ABaseEntity> implements IBaseServic
         Optional<T> op = getRepository().findById(id);
 
         if (op.isEmpty()) {
-            throw new Exception("Registro no encontrado");
+            throw new Exception("Registro #"+id+" no encontrado");
         }
 
         return op.get();
@@ -51,9 +51,9 @@ public abstract class ABaseService<T extends ABaseEntity> implements IBaseServic
         Optional<T> op = getRepository().findById(id);
 
         if (op.isEmpty()) {
-            throw new Exception("Registro no encontrado");
+            throw new Exception("Registro #"+id+" no encontrado");
         }else if(op.get().getDeletedAt() != null) {
-            throw new Exception("Registro inhabilitado");
+            throw new Exception("Registro #"+id+" inhabilitado");
         }
 
         T entityUpdate = op.get();
@@ -70,7 +70,7 @@ public abstract class ABaseService<T extends ABaseEntity> implements IBaseServic
         Optional<T> op = getRepository().findById(id);
 
         if (op.isEmpty()) {
-            throw new Exception("Registro no encontrado");
+            throw new Exception("Registro #"+id+" no encontrado");
         }
 
         T entityUpdate = op.get();
