@@ -5,6 +5,7 @@ import Home from './pages/Home';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import AddUsuario from './Usuario/AddUsuario';
 import EditUsuario from './Usuario/EditUsuario';
+import ViewUsuario from './Usuario/ViewUsuario';
 
 function App() {
   return <div className="App">
@@ -14,6 +15,7 @@ function App() {
         <Route exact path="/" element={<Home />} />
         <Route exact path="/AddUsuario" element={<AddUsuario />} />
         <Route exact path="/EditUsuario/:id" element={<EditUsuario />} />
+        <Route exact path="/ViewUsuario/:id" element={<ViewUsuario />} />
       </Routes>
     </Router>
   </div>;

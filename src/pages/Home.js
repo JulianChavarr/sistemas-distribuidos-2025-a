@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
 export default function Home() {
     const [usuarios, setUsuarios] = useState([]);
+
+    const {id} = useParams();
 
     useEffect(() => {
         loadUsuarios();
@@ -22,6 +24,17 @@ export default function Home() {
         } catch (error) {
             console.error("Error fetching data:", error);
             setUsuarios([]); // Fallback to an empty array in case of error
+        }
+    };
+
+    const deleteUsuarios = async (id) => {
+        console.log("ID a eliminar:", id); // Verifica el ID
+        try {
+            await axios.delete(`http://localhost:8080/api/usuario/${id}`);
+            loadUsuarios(); // Recarga la lista después de eliminar
+        } catch (error) {
+            console.error("Error al eliminar el usuario:", error);
+            alert("No se pudo eliminar el usuario. Inténtalo de nuevo.");
         }
     };
 
@@ -48,9 +61,14 @@ export default function Home() {
                                 <td>{usuario.password}</td>
                                 <td>{usuario.rol}</td>
                                 <td>
-                                    <button className="btn btn-outline-primary mx-2">Ver</button>
+                                    <Link className="btn btn-outline-primary mx-2" to={`/ViewUsuario/${usuario.id}`}>Ver</Link>
                                     <Link className="btn btn-outline-warning mx-2" to={`/EditUsuario/${usuario.id}`}>Editar</Link>
-                                    <button className="btn btn-outline-danger mx-2">Eliminar</button>
+                                    <button
+                                        className="btn btn-outline-danger mx-2"
+                                        onClick={() => deleteUsuarios(usuario.id)}
+                                    >
+                                        Eliminar
+                                    </button>
                                 </td>
                             </tr>
                         ))}

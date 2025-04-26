@@ -80,7 +80,7 @@ export default function EditUsuario() {
                             <input type='text' className='form-control' placeholder='Ingrese su rol' name='rol' value={rol} onChange={(e) => onInputChange(e)} />
                         </div>
                         <button type='submit' className='btn btn-outline-primary'>
-                            Registrar
+                            Actualizar
                         </button>
                         <Link className='btn btn-outline-danger mx-2' to="/">
                             Cancelar
