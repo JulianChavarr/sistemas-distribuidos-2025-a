@@ -12,6 +12,7 @@ export default function Navbar() {
                     </button>
                     <span className='navbar-toggler-icon'></span>
                     <Link className="btn btn-outline-light" to="/AddUsuario">Registrar</Link>
+                    <Link className="btn btn-outline-light" to="/AddAgenda">Agenda</Link>
                 </div>
             </nav>
         </div>

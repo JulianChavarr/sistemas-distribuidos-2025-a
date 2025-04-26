@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 export default function Home() {
     const [usuarios, setUsuarios] = useState([]);
@@ -48,7 +49,7 @@ export default function Home() {
                                 <td>{usuario.rol}</td>
                                 <td>
                                     <button className="btn btn-outline-primary mx-2">Ver</button>
-                                    <button className="btn btn-outline-warning mx-2">Editar</button>
+                                    <Link className="btn btn-outline-warning mx-2" to={`/EditUsuario/${usuario.id}`}>Editar</Link>
                                     <button className="btn btn-outline-danger mx-2">Eliminar</button>
                                 </td>
                             </tr>
