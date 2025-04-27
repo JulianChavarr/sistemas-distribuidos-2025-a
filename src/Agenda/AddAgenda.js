@@ -10,7 +10,9 @@ export default function AddAgenda() {
         status: true,
         codeAuth: true,
         usuarioId: {
-            id: ""
+            id: 0,
+            status: true,
+            codeAuth: true
         },
         name: "",
         fechaInicio: "",
@@ -20,13 +22,31 @@ export default function AddAgenda() {
     const { usuarioId, name, fechaInicio, fechaFin } = agendas;
 
     const onInputChange = (e) => {
-        setAgendas({ ...agendas, [e.target.name]: e.target.value });
+
+        const { name, value } = e.target;
+
+        if (name === "usuarioId") {
+            const parsedValue = parseInt(value, 10);
+            setAgendas({
+                ...agendas,
+                usuarioId: {
+                    ...agendas.usuarioId,
+                    id: isNaN(parsedValue) ? 0 : parsedValue, // Actualiza solo el campo `id` dentro de `usuarioId`
+                },
+            });
+        } else {
+            setAgendas({ ...agendas, [name]: value }); // Actualiza los campos de nivel superior
+        }
+        
     }
 
     const onSubmit = async (e) => {
         e.preventDefault();
+
+        console.log("Datos enviados al servidor:", agendas);
+
         await axios.post("http://localhost:8080/api/agenda", agendas)
-        navigate("/");
+        navigate("/HomeAgenda");
     }
 
     return <div className='container'>
@@ -39,13 +59,13 @@ export default function AddAgenda() {
                         <label htmlFor='UsuarioId' className='form-label'>
                             Usuario Id
                         </label>
-                        <input type='text' className='form-control' placeholder='Ingrese su id de usuario' name='usuarioId' value={usuarioId} onChange={(e) => onInputChange(e)} />
+                        <input type='number' className='form-control' placeholder='Ingrese su id de usuario' name='usuarioId' value={usuarioId.id || 0} onChange={(e) => onInputChange(e)} />
                     </div>
                     <div className='mb-3'>
                         <label htmlFor='Name' className='form-label'>
                             Nombre
                         </label>
-                        <input type='text' className='form-control' placeholder='Ingrese su nombre' name='name' value={name} onChange={(e) => onInputChange(e)} />
+                        <input type='text' className='form-control' placeholder='Ingrese nombre de la agenda' name='name' value={name} onChange={(e) => onInputChange(e)} />
                     </div>
                     <div className='mb-3'>
                         <label htmlFor='FechaInicio' className='form-label'>
@@ -63,7 +83,7 @@ export default function AddAgenda() {
                     <button type='submit' className='btn btn-outline-primary'>
                         Registrar
                     </button>
-                    <Link className='btn btn-outline-danger mx-2' to="/">
+                    <Link className='btn btn-outline-danger mx-2' to="/HomeAgenda">
                         Cancelar
                     </Link>
                 </form>

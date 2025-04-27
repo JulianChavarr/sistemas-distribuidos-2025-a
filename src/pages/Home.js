@@ -5,7 +5,7 @@ import { Link, useParams } from 'react-router-dom';
 export default function Home() {
     const [usuarios, setUsuarios] = useState([]);
 
-    const {id} = useParams();
+    const { id } = useParams();
 
     useEffect(() => {
         loadUsuarios();
@@ -40,11 +40,16 @@ export default function Home() {
 
     return (
         <div className='container'>
-            <div className='py-4'>
+            <div className='d-flex justify-content-end py-3'>
+                <Link className="btn btn-primary me-2" to="/">Usuarios</Link>
+                <Link className="btn btn-success" to="/HomeAgenda">Agendas</Link>
+            </div>
+            <div className='py-0'>
                 <table className="table border shadow">
                     <thead>
                         <tr>
                             <th scope="col">#</th>
+                            <th scope="col">ID</th>
                             <th scope="col">Nombre</th>
                             <th scope="col">Correo</th>
                             <th scope="col">Contraseña</th>
@@ -56,6 +61,7 @@ export default function Home() {
                         {usuarios.map((usuario, index) => (
                             <tr key={usuario.id || index}>
                                 <th scope="row">{index + 1}</th>
+                                <td>{usuario.id}</td>
                                 <td>{usuario.name}</td>
                                 <td>{usuario.correo}</td>
                                 <td>{usuario.password}</td>
@@ -77,7 +83,7 @@ export default function Home() {
             </div>
         </div>
 
-        
-        
+
+
     );
 }

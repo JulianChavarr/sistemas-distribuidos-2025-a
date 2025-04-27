@@ -6,13 +6,15 @@ export default function EditAgenda() {
 
     let navigate = useNavigate();
 
-    const { id } = useParams();
+    const {id} = useParams();
 
     const [agendas, setAgendas] = useState({
         status: true,
         codeAuth: true,
         usuarioId: {
-            id: ""
+            id: 0,
+            status: true,
+            codeAuth: true
         },
         name: "",
         fechaInicio: "",
@@ -22,7 +24,20 @@ export default function EditAgenda() {
     const { usuarioId, name, fechaInicio, fechaFin } = agendas;
 
     const onInputChange = (e) => {
-        setAgendas({ ...agendas, [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+
+        if (name === "usuarioId") {
+            const parsedValue = parseInt(value, 10);
+            setAgendas({
+                ...agendas,
+                usuarioId: {
+                    ...agendas.usuarioId,
+                    id: isNaN(parsedValue) ? 0 : parsedValue, // Actualiza solo el campo `id` dentro de `usuarioId`
+                },
+            });
+        } else {
+            setAgendas({ ...agendas, [name]: value }); // Actualiza los campos de nivel superior
+        }
     }
 
     useEffect(() => {
@@ -36,7 +51,7 @@ export default function EditAgenda() {
         console.log("Datos enviados:", agendas); // Verifica los datos
         try {
             await axios.put(`http://localhost:8080/api/agenda/${id}`, agendas);
-            navigate("/");
+            navigate("/HomeAgenda");
         } catch (error) {
             console.error("Error al actualizar la agenda:", error);
         }
@@ -62,7 +77,7 @@ export default function EditAgenda() {
                         <label htmlFor='UsuarioId' className='form-label'>
                             Usuario Id
                         </label>
-                        <input type='text' className='form-control' placeholder='Ingrese su id de usuario' name='usuarioId' value={usuarioId} onChange={(e) => onInputChange(e)} />
+                        <input type='number' className='form-control' placeholder='Ingrese su id de usuario' name='usuarioId' value={usuarioId.id || 0} onChange={(e) => onInputChange(e)} />
                     </div>
                     <div className='mb-3'>
                         <label htmlFor='Name' className='form-label'>
@@ -84,9 +99,9 @@ export default function EditAgenda() {
                     </div>
 
                     <button type='submit' className='btn btn-outline-primary'>
-                        Registrar
+                        Actualizar
                     </button>
-                    <Link className='btn btn-outline-danger mx-2' to="/">
+                    <Link className='btn btn-outline-danger mx-2' to="/HomeAgenda">
                         Cancelar
                     </Link>
                 </form>

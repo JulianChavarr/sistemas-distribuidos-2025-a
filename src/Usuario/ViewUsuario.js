@@ -31,7 +31,7 @@ export default function ViewUsuario() {
                     <h2 className='text-center m-4'>Detalles del Usuario</h2>
                     <div className='card'>
                         <div className='card-header'>
-                            Detalles del Usuario ID:
+                            Detalles del Usuario ID #{id}:
                             <ul className='list-group list-group-flush'>
                                 <li className='list-group-item'>
                                     <b>Nombre:</b>
