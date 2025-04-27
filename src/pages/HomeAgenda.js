@@ -5,7 +5,7 @@ import { Link, useParams } from 'react-router-dom';
 export default function HomeAgenda() {
     const [agendas, setAgendas] = useState([]);
 
-    const {id} = useParams();
+    const { id } = useParams();
 
     useEffect(() => {
         loadAgendas();
@@ -41,9 +41,10 @@ export default function HomeAgenda() {
     return (
         <div className='container'>
             <div className='d-flex justify-content-end py-3'>
-                            <Link className="btn btn-primary me-2" to="/">Usuarios</Link>
-                            <Link className="btn btn-success" to="/HomeAgenda">Agendas</Link>
-                        </div>
+                <Link className="btn btn-primary me-2" to="/">Usuarios</Link>
+                <Link className="btn btn-success me-2" to="/HomeAgenda">Agendas</Link>
+                <Link className="btn btn-danger" to="/HomeActividad">Actividades</Link>
+            </div>
             <div className='py-0'>
                 <table className="table border shadow">
                     <thead>
@@ -87,7 +88,7 @@ export default function HomeAgenda() {
             </div>
         </div>
 
-        
-        
+
+
     );
 }

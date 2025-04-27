@@ -63,7 +63,7 @@ export default function EditAgenda() {
             const result = await axios.get(`http://localhost:8080/api/agenda/${id}`);
             setAgendas(result.data.data); // Asegúrate de que el servidor devuelva los datos correctamente
         } catch (error) {
-            console.error("Error al cargar el agenda:", error);
+            console.error("Error al cargar la agenda:", error);
         }
     }
 
@@ -83,7 +83,7 @@ export default function EditAgenda() {
                         <label htmlFor='Name' className='form-label'>
                             Nombre
                         </label>
-                        <input type='text' className='form-control' placeholder='Ingrese su nombre' name='name' value={name} onChange={(e) => onInputChange(e)} />
+                        <input type='text' className='form-control' placeholder='Ingrese nombre de la agenda' name='name' value={name} onChange={(e) => onInputChange(e)} />
                     </div>
                     <div className='mb-3'>
                         <label htmlFor='FechaInicio' className='form-label'>

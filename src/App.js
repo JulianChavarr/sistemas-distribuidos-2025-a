@@ -10,6 +10,10 @@ import AddAgenda from './Agenda/AddAgenda.js';
 import EditAgenda from './Agenda/EditAgenda.js';
 import HomeAgenda from './pages/HomeAgenda.js';
 import ViewAgenda from './Agenda/ViewAgenda.js';
+import HomeActividad from './pages/HomeActividad.js';
+import AddActividad from './Actividad/AddActividad.js';
+import EditActividad from './Actividad/EditActividad.js';
+import ViewActividad from './Actividad/ViewActividad.js';
 
 function App() {
   return <div className="App">
@@ -24,6 +28,10 @@ function App() {
         <Route exact path="/AddAgenda" element={<AddAgenda />} />
         <Route exact path="/EditAgenda/:id" element={<EditAgenda />} />
         <Route exact path="/ViewAgenda/:id" element={<ViewAgenda />} />
+        <Route exact path="/HomeActividad" element={<HomeActividad />} />
+        <Route exact path="/AddActividad" element={<AddActividad />} />
+        <Route exact path="/EditActividad/:id" element={<EditActividad />} />
+        <Route exact path="/ViewActividad/:id" element={<ViewActividad />} />
       </Routes>
     </Router>
   </div>;

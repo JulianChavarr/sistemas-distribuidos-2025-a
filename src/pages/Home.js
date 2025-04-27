@@ -42,7 +42,8 @@ export default function Home() {
         <div className='container'>
             <div className='d-flex justify-content-end py-3'>
                 <Link className="btn btn-primary me-2" to="/">Usuarios</Link>
-                <Link className="btn btn-success" to="/HomeAgenda">Agendas</Link>
+                <Link className="btn btn-success me-2" to="/HomeAgenda">Agendas</Link>
+                <Link className="btn btn-danger" to="/HomeActividad">Actividades</Link>
             </div>
             <div className='py-0'>
                 <table className="table border shadow">

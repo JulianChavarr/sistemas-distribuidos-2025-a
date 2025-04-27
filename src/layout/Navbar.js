@@ -12,7 +12,8 @@ export default function Navbar() {
                     </button>
                     <div className="d-flex ms-auto"> {/* Alinea los botones a la derecha */}
                         <Link className="btn btn-outline-dark me-2" to="/AddUsuario">Registrar Usuario</Link>
-                        <Link className="btn btn-outline-dark" to="/AddAgenda">Registrar Agenda</Link>
+                        <Link className="btn btn-outline-dark me-2" to="/AddAgenda">Registrar Agenda</Link>
+                        <Link className="btn btn-outline-dark" to="/AddActividad">Registrar Actividad</Link>
                     </div>
                 </div>
             </nav>
