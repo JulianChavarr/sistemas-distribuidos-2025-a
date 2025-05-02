@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.corhuila.AgendaManager.Entity.Actividad;
 import com.corhuila.AgendaManager.IService.IActividadService;
 
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://107.22.67.73:8080")
 @RestController
 @RequestMapping("api/actividad")
 public class ActividadController extends ABaseController<Actividad, IActividadService> {

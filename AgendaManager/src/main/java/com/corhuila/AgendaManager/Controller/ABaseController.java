@@ -10,6 +10,8 @@ import com.corhuila.AgendaManager.IService.IBaseService;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@RestController
+@CrossOrigin(origins = "http://agendadb.s3-website-us-east-1.amazonaws.com")
 public abstract class ABaseController<T extends ABaseEntity, S extends IBaseService<T>> {
     protected S service;
     protected String entityName;
