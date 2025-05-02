@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { act, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom';
 
 export default function EditActividad() {
@@ -50,7 +50,7 @@ export default function EditActividad() {
         e.preventDefault();
         console.log("Datos enviados:", actividades); // Verifica los datos
         try {
-            await axios.put(`http://localhost:8080/api/actividad/${id}`, actividades);
+            await axios.put(`http://107.22.67.73:8080/api/actividad/${id}`, actividades);
             navigate("/HomeActividad");
         } catch (error) {
             console.error("Error al actualizar la actividad:", error);
@@ -60,7 +60,7 @@ export default function EditActividad() {
     const loadActividad = async () => {
         console.log("ID enviado:", id); // Verifica el ID
         try {
-            const result = await axios.get(`http://localhost:8080/api/actividad/${id}`);
+            const result = await axios.get(`http://107.22.67.73:8080/api/actividad/${id}`);
             setActividades(result.data.data); // Asegúrate de que el servidor devuelva los datos correctamente
         } catch (error) {
             console.error("Error al cargar la actividad:", error);

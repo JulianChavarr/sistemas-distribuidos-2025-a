@@ -24,7 +24,7 @@ export default function ViewActividad() {
     }, []);
 
     const loadActividad = async () => {
-        const result = await axios.get(`http://localhost:8080/api/actividad/${id}`);
+        const result = await axios.get(`http://107.22.67.73:8080/api/actividad/${id}`);
         setActividades(result.data.data);
     }
 

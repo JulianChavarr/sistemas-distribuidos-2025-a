@@ -24,7 +24,7 @@ export default function ViewAgenda() {
     }, []);
 
     const loadAgenda = async () => {
-        const result = await axios.get(`http://localhost:8080/api/agenda/${id}`);
+        const result = await axios.get(`http://107.22.67.73:8080/api/agenda/${id}`);
         setAgendas(result.data.data);
     }
 

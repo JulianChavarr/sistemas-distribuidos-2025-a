@@ -13,7 +13,7 @@ export default function Home() {
 
     const loadUsuarios = async () => {
         try {
-            const result = await axios.get("http://localhost:8080/api/usuario");
+            const result = await axios.get("http://107.22.67.73:8080/api/usuario");
             console.log("API Response:", result.data); // Debugging: Log the API response
             if (Array.isArray(result.data.data)) {
                 setUsuarios(result.data.data); // Access the nested array
@@ -30,7 +30,7 @@ export default function Home() {
     const deleteUsuarios = async (id) => {
         console.log("ID a eliminar:", id); // Verifica el ID
         try {
-            await axios.delete(`http://localhost:8080/api/usuario/${id}`);
+            await axios.delete(`http://107.22.67.73:8080/api/usuario/${id}`);
             loadUsuarios(); // Recarga la lista después de eliminar
         } catch (error) {
             console.error("Error al eliminar el usuario:", error);
