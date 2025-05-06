@@ -35,12 +35,18 @@ public abstract class ABaseService<T extends ABaseEntity> implements IBaseServic
     }
 
     @Override
-    public T save(T entity) throws Exception{
+    public T save(T entity) throws Exception {
         try {
-
             entity.setCreatedBy(1L);
             entity.setCreatedAt(LocalDateTime.now());
             return getRepository().save(entity);
+        } catch (jakarta.validation.ConstraintViolationException e) {
+            // Procesar las violaciones de validación y devolver solo los mensajes personalizados
+            StringBuilder errorMessage = new StringBuilder("Errores de validación: ");
+            e.getConstraintViolations().forEach(violation -> {
+                errorMessage.append(violation.getMessage()).append("; ");
+            });
+            throw new Exception(errorMessage.toString().trim());
         } catch (Exception e) {
             throw new Exception("Error al guardar la entidad: " + e.getMessage());
         }

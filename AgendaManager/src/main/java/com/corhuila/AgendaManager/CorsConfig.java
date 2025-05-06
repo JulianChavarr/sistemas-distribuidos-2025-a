@@ -1,4 +1,4 @@
-package com.corhuila.AgendaManager.Config;
+package com.corhuila.AgendaManager;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,8 +17,8 @@ public class CorsConfig {
                 registry.addMapping("/**") // Permitir todas las rutas
                         .allowedOrigins("*") // Permitir todos los orígenes
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Métodos permitidos
-                        .allowedHeaders("*") // Permitir todos los encabezados
-                        .allowCredentials(true); // Permitir credenciales
+                        .allowedHeaders("*"); // Permitir todos los encabezados
+                // Nota: allowCredentials(true) ha sido eliminado
             }
         };
     }
