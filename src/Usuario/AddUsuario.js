@@ -9,13 +9,14 @@ export default function AddUsuario() {
     const [usuarios, setUsuarios] = useState({
         status: true,
         codeAuth: true,
+        username: "",
         name: "",
         correo: "",
         password: "",
         rol: ""
     });
 
-    const { name, correo, password, rol } = usuarios;
+    const { username, name, correo, password, rol } = usuarios;
 
     const onInputChange = (e) => {
         setUsuarios({ ...usuarios, [e.target.name]: e.target.value });
@@ -23,7 +24,7 @@ export default function AddUsuario() {
 
     const onSubmit = async (e) => {
         e.preventDefault();
-        await axios.post("http://107.22.67.73:8080/api/usuario", usuarios)
+        await axios.post("http://localhost:8080/api/usuario", usuarios)
         navigate("/");
     }
 
@@ -33,6 +34,12 @@ export default function AddUsuario() {
                 <h2 className='text-center m-4'>Registrar Usuario</h2>
 
                 <form onSubmit={(e) => onSubmit(e)}>
+                    <div className='mb-3'>
+                        <label htmlFor='Username' className='form-label'>
+                            Nombre de Usuario
+                        </label>
+                        <input type='text' className='form-control' placeholder='Ingrese su nombre de usuario' name='username' value={username} onChange={(e) => onInputChange(e)} />
+                    </div>
                     <div className='mb-3'>
                         <label htmlFor='Name' className='form-label'>
                             Nombre

@@ -13,7 +13,7 @@ export default function Home() {
 
     const loadUsuarios = async () => {
         try {
-            const result = await axios.get("http://107.22.67.73:8080/api/usuario");
+            const result = await axios.get("http://localhost:8080/api/usuario");
             console.log("API Response:", result.data); // Debugging: Log the API response
             if (Array.isArray(result.data.data)) {
                 setUsuarios(result.data.data); // Access the nested array
@@ -30,7 +30,7 @@ export default function Home() {
     const deleteUsuarios = async (id) => {
         console.log("ID a eliminar:", id); // Verifica el ID
         try {
-            await axios.delete(`http://107.22.67.73:8080/api/usuario/${id}`);
+            await axios.delete(`http://localhost:8080/api/usuario/${id}`);
             loadUsuarios(); // Recarga la lista después de eliminar
         } catch (error) {
             console.error("Error al eliminar el usuario:", error);
@@ -43,7 +43,8 @@ export default function Home() {
             <div className='d-flex justify-content-end py-3'>
                 <Link className="btn btn-primary me-2" to="/">Usuarios</Link>
                 <Link className="btn btn-success me-2" to="/HomeAgenda">Agendas</Link>
-                <Link className="btn btn-danger" to="/HomeActividad">Actividades</Link>
+                <Link className="btn btn-danger me-2" to="/HomeActividad">Actividades</Link>
+                <Link className="btn btn-warning" to="/HomeClase">Clases</Link>
             </div>
             <div className='py-0'>
                 <table className="table border shadow">
@@ -51,6 +52,7 @@ export default function Home() {
                         <tr>
                             <th scope="col">#</th>
                             <th scope="col">ID</th>
+                            <th scope="col">Nombre de Usuario</th>
                             <th scope="col">Nombre</th>
                             <th scope="col">Correo</th>
                             <th scope="col">Contraseña</th>
@@ -63,6 +65,7 @@ export default function Home() {
                             <tr key={usuario.id || index}>
                                 <th scope="row">{index + 1}</th>
                                 <td>{usuario.id}</td>
+                                <td>{usuario.username}</td>
                                 <td>{usuario.name}</td>
                                 <td>{usuario.correo}</td>
                                 <td>{usuario.password}</td>

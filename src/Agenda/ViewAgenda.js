@@ -13,6 +13,9 @@ export default function ViewAgenda() {
             codeAuth: true
         },
         name: "",
+        facultad: "",
+        programa: "",
+        periodo: "",
         fechaInicio: "",
         fechaFin: ""
     });
@@ -24,7 +27,7 @@ export default function ViewAgenda() {
     }, []);
 
     const loadAgenda = async () => {
-        const result = await axios.get(`http://107.22.67.73:8080/api/agenda/${id}`);
+        const result = await axios.get(`http://localhost:8080/api/agenda/${id}`);
         setAgendas(result.data.data);
     }
 
@@ -42,6 +45,18 @@ export default function ViewAgenda() {
                                     {agendas.name}
                                 </li>
                                 <li className='list-group-item'>
+                                    <b>Facultad:</b>
+                                    {agendas.facultad}
+                                </li>
+                                <li className='list-group-item'>
+                                    <b>Programa:</b>
+                                    {agendas.programa}
+                                </li>
+                                <li className='list-group-item'>
+                                    <b>Periodo:</b>
+                                    {agendas.periodo}
+                                </li>
+                                <li className='list-group-item'>
                                     <b>Creación:</b>
                                     {agendas.fechaInicio}
                                 </li>
@@ -55,6 +70,10 @@ export default function ViewAgenda() {
                                 </li>
                                 <li className='list-group-item'>
                                     <b>Usuario:</b>
+                                    {agendas.usuarioId.username}
+                                </li>
+                                <li className='list-group-item'>
+                                    <b>Nombre:</b>
                                     {agendas.usuarioId.name}
                                 </li>
                                 <li className='list-group-item'>

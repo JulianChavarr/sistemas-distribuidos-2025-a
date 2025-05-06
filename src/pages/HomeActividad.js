@@ -5,7 +5,7 @@ import { Link, useParams } from 'react-router-dom';
 export default function HomeActividad() {
     const [actividades, setActividades] = useState([]);
 
-    const {id} = useParams();
+    const { id } = useParams();
 
     useEffect(() => {
         loadActividades();
@@ -13,7 +13,7 @@ export default function HomeActividad() {
 
     const loadActividades = async () => {
         try {
-            const result = await axios.get("http://107.22.67.73:8080/api/actividad");
+            const result = await axios.get("http://localhost:8080/api/actividad");
             console.log("API Response:", result.data); // Debugging: Log the API response
             if (Array.isArray(result.data.data)) {
                 setActividades(result.data.data); // Access the nested array
@@ -30,7 +30,7 @@ export default function HomeActividad() {
     const deleteActividades = async (id) => {
         console.log("ID a eliminar:", id); // Verifica el ID
         try {
-            await axios.delete(`http://107.22.67.73:8080/api/actividad/${id}`);
+            await axios.delete(`http://localhost:8080/api/actividad/${id}`);
             loadActividades(); // Recarga la lista después de eliminar
         } catch (error) {
             console.error("Error al eliminar la actividad:", error);
@@ -41,19 +41,23 @@ export default function HomeActividad() {
     return (
         <div className='container'>
             <div className='d-flex justify-content-end py-3'>
-                            <Link className="btn btn-primary me-2" to="/">Usuarios</Link>
-                            <Link className="btn btn-success me-2" to="/HomeAgenda">Agendas</Link>
-                            <Link className="btn btn-danger" to="/HomeActividad">Actividades</Link>
-                        </div>
+                <Link className="btn btn-primary me-2" to="/">Usuarios</Link>
+                <Link className="btn btn-success me-2" to="/HomeAgenda">Agendas</Link>
+                <Link className="btn btn-danger me-2" to="/HomeActividad">Actividades</Link>
+                <Link className="btn btn-warning" to="/HomeClase">Clases</Link>
+            </div>
             <div className='py-0'>
                 <table className="table border shadow">
                     <thead>
                         <tr>
                             <th scope="col">#</th>
                             <th scope="col">ID Actividad</th>
-                            <th scope="col">Nombre</th>
+                            <th scope="col">Categoria</th>
+                            <th scope="col">Sub Categoria</th>
+                            <th scope="col">Horas Semanales</th>
+                            <th scope="col">Horas Semestre</th>
                             <th scope="col">Descripción</th>
-                            <th scope="col">Creación</th>
+                            <th scope="col">Producto</th>
                             <th scope="col">ID Agenda</th>
                             <th scope="col">Nombre</th>
                             <th scope="col">Acción</th>
@@ -64,9 +68,12 @@ export default function HomeActividad() {
                             <tr key={actividad.id || index}>
                                 <th scope="row">{index + 1}</th>
                                 <td>{actividad.id}</td>
-                                <td>{actividad.name}</td>
+                                <td>{actividad.categoria}</td>
+                                <td>{actividad.subCategoria}</td>
+                                <td>{actividad.horasSemanales}</td>
+                                <td>{actividad.horasSemestre}</td>
                                 <td>{actividad.descripcion}</td>
-                                <td>{actividad.fechaActividad}</td>
+                                <td>{actividad.producto}</td>
                                 <td>{actividad.agendaId.id}</td>
                                 <td>{actividad.agendaId.name}</td>
                                 <td>
@@ -86,7 +93,7 @@ export default function HomeActividad() {
             </div>
         </div>
 
-        
-        
+
+
     );
 }

@@ -7,6 +7,7 @@ export default function ViewUsuario() {
     const [usuarios, setUsuarios] = useState({
         status: true,
         codeAuth: true,
+        username: "",
         name: "",
         correo: "",
         password: "",
@@ -20,7 +21,7 @@ export default function ViewUsuario() {
     }, []);
 
     const loadUsuario = async () => {
-        const result = await axios.get(`http://107.22.67.73:8080/api/usuario/${id}`);
+        const result = await axios.get(`http://localhost:8080/api/usuario/${id}`);
         setUsuarios(result.data.data); 
     }
 
@@ -33,6 +34,10 @@ export default function ViewUsuario() {
                         <div className='card-header'>
                             Detalles del Usuario ID #{id}:
                             <ul className='list-group list-group-flush'>
+                                <li className='list-group-item'>
+                                    <b>Nombre de Usuario:</b>
+                                    {usuarios.username}
+                                </li>
                                 <li className='list-group-item'>
                                     <b>Nombre:</b>
                                     {usuarios.name}

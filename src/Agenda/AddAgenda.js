@@ -15,11 +15,14 @@ export default function AddAgenda() {
             codeAuth: true
         },
         name: "",
+        facultad: "",
+        programa: "",
+        periodo: "",
         fechaInicio: "",
         fechaFin: ""
     });
 
-    const { usuarioId, name, fechaInicio, fechaFin } = agendas;
+    const { usuarioId, name, facultad, programa, periodo, fechaInicio, fechaFin } = agendas;
 
     const onInputChange = (e) => {
 
@@ -37,7 +40,7 @@ export default function AddAgenda() {
         } else {
             setAgendas({ ...agendas, [name]: value }); // Actualiza los campos de nivel superior
         }
-        
+
     }
 
     const onSubmit = async (e) => {
@@ -45,7 +48,7 @@ export default function AddAgenda() {
 
         console.log("Datos enviados al servidor:", agendas);
 
-        await axios.post("http://107.22.67.73:8080/api/agenda", agendas)
+        await axios.post("http://localhost:8080/api/agenda", agendas)
         navigate("/HomeAgenda");
     }
 
@@ -66,6 +69,24 @@ export default function AddAgenda() {
                             Nombre
                         </label>
                         <input type='text' className='form-control' placeholder='Ingrese nombre de la agenda' name='name' value={name} onChange={(e) => onInputChange(e)} />
+                    </div>
+                    <div className='mb-3'>
+                        <label htmlFor='Facultad' className='form-label'>
+                            Facultad
+                        </label>
+                        <input type='text' className='form-control' placeholder='Ingrese la facultad' name='facultad' value={facultad} onChange={(e) => onInputChange(e)} />
+                    </div>
+                    <div className='mb-3'>
+                        <label htmlFor='Programa' className='form-label'>
+                            Programa
+                        </label>
+                        <input type='text' className='form-control' placeholder='Ingrese el programa' name='programa' value={programa} onChange={(e) => onInputChange(e)} />
+                    </div>
+                    <div className='mb-3'>
+                        <label htmlFor='Periodo' className='form-label'>
+                            Periodo
+                        </label>
+                        <input type='text' className='form-control' placeholder='Ingrese el periodo' name='periodo' value={periodo} onChange={(e) => onInputChange(e)} />
                     </div>
                     <div className='mb-3'>
                         <label htmlFor='FechaInicio' className='form-label'>

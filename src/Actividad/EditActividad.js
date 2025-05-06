@@ -14,14 +14,22 @@ export default function EditActividad() {
         agendaId: {
             id: 0,
             status: true,
-            codeAuth: true
+            codeAuth: true,
+            usuarioId: {
+                id: 0,
+                status: true,
+                codeAuth: true
+            }
         },
-        name: "",
+        categoria: "",
+        subCategoria: "",
+        horasSemanales: 1,
+        horasSemestre: 1,
         descripcion: "",
-        fechaActividad: ""
+        producto: ""
     });
 
-    const { agendaId, name, descripcion, fechaActividad } = actividades;
+    const { agendaId, categoria, subCategoria, horasSemanales, horasSemestre, descripcion, producto } = actividades;
 
     const onInputChange = (e) => {
         const { name, value } = e.target;
@@ -32,11 +40,23 @@ export default function EditActividad() {
                 ...actividades,
                 agendaId: {
                     ...actividades.agendaId,
-                    id: isNaN(parsedValue) ? 0 : parsedValue, // Actualiza solo el campo `id` dentro de `agendaId`
+                    id: isNaN(parsedValue) ? 0 : parsedValue,
+                },
+            });
+        } else if (name === "usuarioId") {
+            const parsedValue = parseInt(value, 10);
+            setActividades({
+                ...actividades,
+                agendaId: {
+                    ...actividades.agendaId,
+                    usuarioId: {
+                        ...actividades.agendaId.usuarioId,
+                        id: isNaN(parsedValue) ? 0 : parsedValue,
+                    },
                 },
             });
         } else {
-            setActividades({ ...actividades, [name]: value }); // Actualiza los campos de nivel superior
+            setActividades({ ...actividades, [name]: value });
         }
     }
 
@@ -50,7 +70,7 @@ export default function EditActividad() {
         e.preventDefault();
         console.log("Datos enviados:", actividades); // Verifica los datos
         try {
-            await axios.put(`http://107.22.67.73:8080/api/actividad/${id}`, actividades);
+            await axios.put(`http://localhost:8080/api/actividad/${id}`, actividades);
             navigate("/HomeActividad");
         } catch (error) {
             console.error("Error al actualizar la actividad:", error);
@@ -60,7 +80,7 @@ export default function EditActividad() {
     const loadActividad = async () => {
         console.log("ID enviado:", id); // Verifica el ID
         try {
-            const result = await axios.get(`http://107.22.67.73:8080/api/actividad/${id}`);
+            const result = await axios.get(`http://localhost:8080/api/actividad/${id}`);
             setActividades(result.data.data); // Asegúrate de que el servidor devuelva los datos correctamente
         } catch (error) {
             console.error("Error al cargar la actividad:", error);
@@ -80,22 +100,46 @@ export default function EditActividad() {
                         <input type='number' className='form-control' placeholder='Ingrese su id de agenda' name='agendaId' value={agendaId.id || 0} onChange={(e) => onInputChange(e)} />
                     </div>
                     <div className='mb-3'>
-                        <label htmlFor='Name' className='form-label'>
-                            Nombre
+                        <label htmlFor='Categoria' className='form-label'>
+                            Usuario Id
                         </label>
-                        <input type='text' className='form-control' placeholder='Ingrese nombre de la actividad' name='name' value={name} onChange={(e) => onInputChange(e)} />
+                        <input type='number' className='form-control' placeholder='Ingrese su id de usuario' name='usuarioId' value={agendaId.usuarioId.id || 0} onChange={(e) => onInputChange(e)} />
                     </div>
                     <div className='mb-3'>
-                        <label htmlFor='Name' className='form-label'>
-                            Descripción
+                        <label htmlFor='Categoria' className='form-label'>
+                            Categoria
                         </label>
-                        <input type='text' className='form-control' placeholder='Ingrese la descripción' name='descripcion' value={descripcion} onChange={(e) => onInputChange(e)} />
+                        <input type='text' className='form-control' placeholder='Ingrese su categoria' name='categoria' value={categoria} onChange={(e) => onInputChange(e)} />
                     </div>
                     <div className='mb-3'>
-                        <label htmlFor='FechaInicio' className='form-label'>
-                            Fecha de la Actividad
+                        <label htmlFor='SubCategoria' className='form-label'>
+                            Sub Categoria
                         </label>
-                        <input type='date' className='form-control' placeholder='Ingrese la fecha de la actividad' name='fechaActividad' value={fechaActividad} onChange={(e) => onInputChange(e)} />
+                        <input type='text' className='form-control' placeholder='Ingrese su sub categoria' name='subCategoria' value={subCategoria} onChange={(e) => onInputChange(e)} />
+                    </div>
+                    <div className='mb-3'>
+                        <label htmlFor='HorasSemanales' className='form-label'>
+                            Horas Semanales
+                        </label>
+                        <input type='number' className='form-control' placeholder='Ingrese las horas semanales' name='horasSemanales' value={horasSemanales} onChange={(e) => onInputChange(e)} />
+                    </div>
+                    <div className='mb-3'>
+                        <label htmlFor='HorasSemestre' className='form-label'>
+                            Horas Semestre
+                        </label>
+                        <input type='number' className='form-control' placeholder='Ingrese las horas semestre' name='horasSemestre' value={horasSemestre} onChange={(e) => onInputChange(e)} />
+                    </div>
+                    <div className='mb-3'>
+                        <label htmlFor='Descripcion' className='form-label'>
+                            Descripcion
+                        </label>
+                        <input type='text' className='form-control' placeholder='Ingrese la descripcion' name='descripcion' value={descripcion} onChange={(e) => onInputChange(e)} />
+                    </div>
+                    <div className='mb-3'>
+                        <label htmlFor='Producto' className='form-label'>
+                            Producto
+                        </label>
+                        <input type='text' className='form-control' placeholder='Ingrese el producto' name='producto' value={producto} onChange={(e) => onInputChange(e)} />
                     </div>
 
                     <button type='submit' className='btn btn-outline-primary'>

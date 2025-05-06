@@ -13,7 +13,7 @@ export default function HomeAgenda() {
 
     const loadAgendas = async () => {
         try {
-            const result = await axios.get("http://107.22.67.73:8080/api/agenda");
+            const result = await axios.get("http://localhost:8080/api/agenda");
             console.log("API Response:", result.data); // Debugging: Log the API response
             if (Array.isArray(result.data.data)) {
                 setAgendas(result.data.data); // Access the nested array
@@ -30,7 +30,7 @@ export default function HomeAgenda() {
     const deleteAgendas = async (id) => {
         console.log("ID a eliminar:", id); // Verifica el ID
         try {
-            await axios.delete(`http://107.22.67.73:8080/api/agenda/${id}`);
+            await axios.delete(`http://localhost:8080/api/agenda/${id}`);
             loadAgendas(); // Recarga la lista después de eliminar
         } catch (error) {
             console.error("Error al eliminar la agenda:", error);
@@ -43,7 +43,8 @@ export default function HomeAgenda() {
             <div className='d-flex justify-content-end py-3'>
                 <Link className="btn btn-primary me-2" to="/">Usuarios</Link>
                 <Link className="btn btn-success me-2" to="/HomeAgenda">Agendas</Link>
-                <Link className="btn btn-danger" to="/HomeActividad">Actividades</Link>
+                <Link className="btn btn-danger me-2" to="/HomeActividad">Actividades</Link>
+                <Link className="btn btn-warning" to="/HomeClase">Clases</Link>
             </div>
             <div className='py-0'>
                 <table className="table border shadow">
@@ -52,6 +53,9 @@ export default function HomeAgenda() {
                             <th scope="col">#</th>
                             <th scope="col">ID Agenda</th>
                             <th scope="col">Nombre</th>
+                            <th scope="col">Facultad</th>
+                            <th scope="col">Programa</th>
+                            <th scope="col">Periodo</th>
                             <th scope="col">Creación</th>
                             <th scope="col">Finalización</th>
                             <th scope="col">ID Usuario</th>
@@ -66,10 +70,13 @@ export default function HomeAgenda() {
                                 <th scope="row">{index + 1}</th>
                                 <td>{agenda.id}</td>
                                 <td>{agenda.name}</td>
+                                <td>{agenda.facultad}</td>
+                                <td>{agenda.programa}</td>
+                                <td>{agenda.periodo}</td>
                                 <td>{agenda.fechaInicio}</td>
                                 <td>{agenda.fechaFin}</td>
                                 <td>{agenda.usuarioId.id}</td>
-                                <td>{agenda.usuarioId.name}</td>
+                                <td>{agenda.usuarioId.username}</td>
                                 <td>{agenda.usuarioId.rol}</td>
                                 <td>
                                     <Link className="btn btn-outline-primary mx-2" to={`/ViewAgenda/${agenda.id}`}>Ver</Link>

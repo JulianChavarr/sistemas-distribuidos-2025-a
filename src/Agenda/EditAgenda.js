@@ -17,11 +17,14 @@ export default function EditAgenda() {
             codeAuth: true
         },
         name: "",
+        facultad: "",
+        programa: "",
+        periodo: "",
         fechaInicio: "",
         fechaFin: ""
     });
 
-    const { usuarioId, name, fechaInicio, fechaFin } = agendas;
+    const { usuarioId, name, facultad, programa, periodo, fechaInicio, fechaFin } = agendas;
 
     const onInputChange = (e) => {
         const { name, value } = e.target;
@@ -50,7 +53,7 @@ export default function EditAgenda() {
         e.preventDefault();
         console.log("Datos enviados:", agendas); // Verifica los datos
         try {
-            await axios.put(`http://107.22.67.73:8080/api/agenda/${id}`, agendas);
+            await axios.put(`http://localhost:8080/api/agenda/${id}`, agendas);
             navigate("/HomeAgenda");
         } catch (error) {
             console.error("Error al actualizar la agenda:", error);
@@ -60,7 +63,7 @@ export default function EditAgenda() {
     const loadAgenda = async () => {
         console.log("ID enviado:", id); // Verifica el ID
         try {
-            const result = await axios.get(`http://107.22.67.73:8080/api/agenda/${id}`);
+            const result = await axios.get(`http://localhost:8080/api/agenda/${id}`);
             setAgendas(result.data.data); // Asegúrate de que el servidor devuelva los datos correctamente
         } catch (error) {
             console.error("Error al cargar la agenda:", error);
@@ -84,6 +87,24 @@ export default function EditAgenda() {
                             Nombre
                         </label>
                         <input type='text' className='form-control' placeholder='Ingrese nombre de la agenda' name='name' value={name} onChange={(e) => onInputChange(e)} />
+                    </div>
+                    <div className='mb-3'>
+                        <label htmlFor='Facultad' className='form-label'>
+                            Facultad
+                        </label>
+                        <input type='text' className='form-control' placeholder='Ingrese la facultad' name='facultad' value={facultad} onChange={(e) => onInputChange(e)} />
+                    </div>
+                    <div className='mb-3'>
+                        <label htmlFor='Programa' className='form-label'>
+                            Programa
+                        </label>
+                        <input type='text' className='form-control' placeholder='Ingrese el programa' name='programa' value={programa} onChange={(e) => onInputChange(e)} />
+                    </div>
+                    <div className='mb-3'>
+                        <label htmlFor='Periodo' className='form-label'>
+                            Periodo
+                        </label>
+                        <input type='text' className='form-control' placeholder='Ingrese el periodo' name='periodo' value={periodo} onChange={(e) => onInputChange(e)} />
                     </div>
                     <div className='mb-3'>
                         <label htmlFor='FechaInicio' className='form-label'>

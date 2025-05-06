@@ -14,6 +14,10 @@ import HomeActividad from './pages/HomeActividad.js';
 import AddActividad from './Actividad/AddActividad.js';
 import EditActividad from './Actividad/EditActividad.js';
 import ViewActividad from './Actividad/ViewActividad.js';
+import HomeClase from './pages/HomeClase.js';
+import AddClase from './Clase/AddClase.js';
+import EditClase from './Clase/EditClase.js';
+import ViewClase from './Clase/ViewClase.js';
 
 function App() {
   return <div className="App">
@@ -32,6 +36,10 @@ function App() {
         <Route exact path="/AddActividad" element={<AddActividad />} />
         <Route exact path="/EditActividad/:id" element={<EditActividad />} />
         <Route exact path="/ViewActividad/:id" element={<ViewActividad />} />
+        <Route exact path="/HomeClase" element={<HomeClase />} />
+        <Route exact path="/AddClase" element={<AddClase />} />
+        <Route exact path="/EditClase/:id" element={<EditClase />} />
+        <Route exact path="/ViewClase/:id" element={<ViewClase />} />
       </Routes>
     </Router>
   </div>;

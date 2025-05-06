@@ -11,13 +11,14 @@ export default function EditUsuario() {
     const [usuarios, setUsuarios] = useState({
         status: true,
         codeAuth: true,
+        username: "",
         name: "",
         correo: "",
         password: "",
         rol: ""
     });
 
-    const { name, correo, password, rol } = usuarios;
+    const { username, name, correo, password, rol } = usuarios;
 
     const onInputChange = (e) => {
         setUsuarios({ ...usuarios, [e.target.name]: e.target.value });
@@ -33,7 +34,7 @@ export default function EditUsuario() {
         e.preventDefault();
         console.log("Datos enviados:", usuarios); // Verifica los datos
         try {
-            await axios.put(`http://107.22.67.73:8080/api/usuario/${id}`, usuarios);
+            await axios.put(`http://localhost:8080/api/usuario/${id}`, usuarios);
             navigate("/");
         } catch (error) {
             console.error("Error al actualizar el usuario:", error);
@@ -43,7 +44,7 @@ export default function EditUsuario() {
     const loadUsuario = async () => {
         console.log("ID enviado:", id); // Verifica el ID
         try {
-            const result = await axios.get(`http://107.22.67.73:8080/api/usuario/${id}`);
+            const result = await axios.get(`http://localhost:8080/api/usuario/${id}`);
             setUsuarios(result.data.data); // Asegúrate de que el servidor devuelva los datos correctamente
         } catch (error) {
             console.error("Error al cargar el usuario:", error);
@@ -56,6 +57,12 @@ export default function EditUsuario() {
                 <h2 className='text-center m-4'>Editar Usuario</h2>
 
                 <form onSubmit={(e) => onSubmit(e)}>
+                    <div className='mb-3'>
+                        <label htmlFor='Username' className='form-label'>
+                            Nombre de Usuario
+                        </label>
+                        <input type='text' className='form-control' placeholder='Ingrese su nombre de usuario' name='username' value={username} onChange={(e) => onInputChange(e)} />
+                    </div>
                     <div className='mb-3'>
                         <label htmlFor='Name' className='form-label'>
                             Nombre
