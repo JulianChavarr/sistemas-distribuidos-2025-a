@@ -70,7 +70,7 @@ export default function EditClase() {
         e.preventDefault();
         console.log("Datos enviados:", clases);
         try {
-            await axios.put(`http://localhost:8080/api/clase/${id}`, clases);
+            await axios.put(`http://54.165.104.165:8080/api/clase/${id}`, clases);
             navigate("/HomeClase");
         } catch (error) {
             console.error("Error al actualizar la clase:", error);
@@ -80,7 +80,7 @@ export default function EditClase() {
     const loadClase = async () => {
         console.log("ID enviado:", id);
         try {
-            const result = await axios.get(`http://localhost:8080/api/clase/${id}`);
+            const result = await axios.get(`http://54.165.104.165:8080/api/clase/${id}`);
             setClases(result.data.data);
         } catch (error) {
             console.error("Error al cargar la clase:", error);

@@ -63,7 +63,7 @@ export default function AddActividad() {
 
         console.log("Datos enviados al servidor:", actividades);
 
-        await axios.post("http://localhost:8080/api/actividad", actividades)
+        await axios.post("http://54.165.104.165:8080/api/actividad", actividades)
         navigate("/HomeActividad");
     }
 

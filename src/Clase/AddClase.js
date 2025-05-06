@@ -63,7 +63,7 @@ export default function AddClase() {
 
         console.log("Datos enviados al servidor:", clases);
 
-        await axios.post("http://localhost:8080/api/clase", clases)
+        await axios.post("http://54.165.104.165:8080/api/clase", clases)
         navigate("/HomeClase");
     }
 

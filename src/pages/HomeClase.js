@@ -13,7 +13,7 @@ export default function HomeClase() {
 
     const loadClases = async () => {
         try {
-            const result = await axios.get("http://localhost:8080/api/clase");
+            const result = await axios.get("http://54.165.104.165:8080/api/clase");
             console.log("API Response:", result.data); // Debugging: Log the API response
             if (Array.isArray(result.data.data)) {
                 setClases(result.data.data); // Access the nested array
@@ -30,7 +30,7 @@ export default function HomeClase() {
     const deleteClases = async (id) => {
         console.log("ID a eliminar:", id); // Verifica el ID
         try {
-            await axios.delete(`http://localhost:8080/api/clase/${id}`);
+            await axios.delete(`http://54.165.104.165:8080/api/clase/${id}`);
             loadClases(); // Recarga la lista después de eliminar
         } catch (error) {
             console.error("Error al eliminar la clase:", error);

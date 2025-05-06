@@ -13,7 +13,7 @@ export default function HomeAgenda() {
 
     const loadAgendas = async () => {
         try {
-            const result = await axios.get("http://localhost:8080/api/agenda");
+            const result = await axios.get("http://54.165.104.165:8080/api/agenda");
             console.log("API Response:", result.data); // Debugging: Log the API response
             if (Array.isArray(result.data.data)) {
                 setAgendas(result.data.data); // Access the nested array
@@ -30,7 +30,7 @@ export default function HomeAgenda() {
     const deleteAgendas = async (id) => {
         console.log("ID a eliminar:", id); // Verifica el ID
         try {
-            await axios.delete(`http://localhost:8080/api/agenda/${id}`);
+            await axios.delete(`http://54.165.104.165:8080/api/agenda/${id}`);
             loadAgendas(); // Recarga la lista después de eliminar
         } catch (error) {
             console.error("Error al eliminar la agenda:", error);

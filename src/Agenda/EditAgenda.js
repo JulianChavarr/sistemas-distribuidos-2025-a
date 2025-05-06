@@ -53,7 +53,7 @@ export default function EditAgenda() {
         e.preventDefault();
         console.log("Datos enviados:", agendas); // Verifica los datos
         try {
-            await axios.put(`http://localhost:8080/api/agenda/${id}`, agendas);
+            await axios.put(`http://54.165.104.165:8080/api/agenda/${id}`, agendas);
             navigate("/HomeAgenda");
         } catch (error) {
             console.error("Error al actualizar la agenda:", error);
@@ -63,7 +63,7 @@ export default function EditAgenda() {
     const loadAgenda = async () => {
         console.log("ID enviado:", id); // Verifica el ID
         try {
-            const result = await axios.get(`http://localhost:8080/api/agenda/${id}`);
+            const result = await axios.get(`http://54.165.104.165:8080/api/agenda/${id}`);
             setAgendas(result.data.data); // Asegúrate de que el servidor devuelva los datos correctamente
         } catch (error) {
             console.error("Error al cargar la agenda:", error);

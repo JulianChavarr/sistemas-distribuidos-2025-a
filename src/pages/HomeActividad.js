@@ -13,7 +13,7 @@ export default function HomeActividad() {
 
     const loadActividades = async () => {
         try {
-            const result = await axios.get("http://localhost:8080/api/actividad");
+            const result = await axios.get("http://54.165.104.165:8080/api/actividad");
             console.log("API Response:", result.data); // Debugging: Log the API response
             if (Array.isArray(result.data.data)) {
                 setActividades(result.data.data); // Access the nested array
@@ -30,7 +30,7 @@ export default function HomeActividad() {
     const deleteActividades = async (id) => {
         console.log("ID a eliminar:", id); // Verifica el ID
         try {
-            await axios.delete(`http://localhost:8080/api/actividad/${id}`);
+            await axios.delete(`http://54.165.104.165:8080/api/actividad/${id}`);
             loadActividades(); // Recarga la lista después de eliminar
         } catch (error) {
             console.error("Error al eliminar la actividad:", error);

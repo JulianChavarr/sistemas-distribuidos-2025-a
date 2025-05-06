@@ -48,7 +48,7 @@ export default function AddAgenda() {
 
         console.log("Datos enviados al servidor:", agendas);
 
-        await axios.post("http://localhost:8080/api/agenda", agendas)
+        await axios.post("http://54.165.104.165:8080/api/agenda", agendas)
         navigate("/HomeAgenda");
     }
 

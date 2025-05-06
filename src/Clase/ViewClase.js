@@ -32,7 +32,7 @@ export default function ViewClase() {
     }, []);
 
     const loadClase = async () => {
-        const result = await axios.get(`http://localhost:8080/api/clase/${id}`);
+        const result = await axios.get(`http://54.165.104.165:8080/api/clase/${id}`);
         setClases(result.data.data);
     }
 

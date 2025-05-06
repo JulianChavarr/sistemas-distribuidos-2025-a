@@ -21,7 +21,7 @@ export default function ViewUsuario() {
     }, []);
 
     const loadUsuario = async () => {
-        const result = await axios.get(`http://localhost:8080/api/usuario/${id}`);
+        const result = await axios.get(`http://54.165.104.165:8080/api/usuario/${id}`);
         setUsuarios(result.data.data); 
     }
 
