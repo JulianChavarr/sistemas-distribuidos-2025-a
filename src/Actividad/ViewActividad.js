@@ -1,21 +1,16 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react'
-import { Link, useParams } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 
 export default function ViewActividad() {
-
     const [actividades, setActividades] = useState({
         status: true,
         codeAuth: true,
         agendaId: {
-            id: 0,
             status: true,
             codeAuth: true,
-            usuarioId: {
-                id: 0,
-                status: true,
-                codeAuth: true
-            }
+            id: 0,
+            name: ""
         },
         categoria: "",
         subCategoria: "",
@@ -26,61 +21,83 @@ export default function ViewActividad() {
     });
 
     const { id } = useParams();
+    const navigate = useNavigate();
 
     useEffect(() => {
         loadActividad();
     }, []);
 
     const loadActividad = async () => {
-        const result = await axios.get(`http://54.165.104.165:8080/api/actividad/${id}`);
-        setActividades(result.data.data);
-    }
+        try {
+            const result = await axios.get(`http://54.165.104.165:8080/api/actividad/${id}`);
+            setActividades(result.data.data);
+        } catch (error) {
+            console.error("Error al cargar los detalles de la actividad:", error);
+        }
+    };
 
     return (
         <div className='container'>
-            <div className='row'>
-                <div className='col-md-6 offset-md-3 border rounded p-4 mt-2 shadow'>
-                    <h2 className='text-center m-4'>Detalles de la Actividad</h2>
+            <div className='row justify-content-center'>
+                <div className='col-md-8 border rounded p-4 mt-2 shadow' style={{ backgroundColor: '#FFFFFF', color: '#000000' }}>
+                    <h2 className='text-center m-4' style={{ color: '#212529' }}>
+                        <i className="fas fa-tasks"></i> Detalles de la Actividad
+                    </h2>
                     <div className='card'>
-                        <div className='card-header'>
-                            Detalles de la Actividad ID #{id}:
-                            <ul className='list-group list-group-flush'>
-                                <li className='list-group-item'>
-                                    <b>Categoria:</b>
-                                    {actividades.categoria}
-                                </li>
-                                <li className='list-group-item'>
-                                    <b>Sub Categoria:</b>
-                                    {actividades.subCategoria}
-                                </li>
-                                <li className='list-group-item'>
-                                    <b>Horas Semanales:</b>
-                                    {actividades.horasSemanales}
-                                </li>
-                                <li className='list-group-item'>
-                                    <b>Horas Semestre:</b>
-                                    {actividades.horasSemestre}
-                                </li>
-                                <li className='list-group-item'>
-                                    <b>Descripcion:</b>
-                                    {actividades.descripcion}
-                                </li>
-                                <li className='list-group-item'>
-                                    <b>Producto:</b>
-                                    {actividades.producto}
-                                </li>
-                                <li className='list-group-item'>
-                                    <b>ID Agenda:</b>
-                                    {actividades.agendaId.id}
-                                </li>
-                                <li className='list-group-item'>
-                                    <b>Agenda:</b>
-                                    {actividades.agendaId.name}
-                                </li>
-                            </ul>
+                        <div className='card-header text-white text-center' style={{ backgroundColor: '#212529' }}>
+                            <strong><i className="fas fa-info-circle"></i> Detalles de la Actividad ID #{id}</strong>
+                        </div>
+                        <div className='card-body'>
+                            <table className='table table-hover table-bordered'>
+                                <tbody>
+                                    <tr>
+                                        <th style={{ color: '#212529' }}><i className="fas fa-tag"></i> Categoría</th>
+                                        <td>{actividades.categoria}</td>
+                                    </tr>
+                                    <tr>
+                                        <th style={{ color: '#212529' }}><i className="fas fa-tags"></i> Subcategoría</th>
+                                        <td>{actividades.subCategoria}</td>
+                                    </tr>
+                                    <tr>
+                                        <th style={{ color: '#212529' }}><i className="fas fa-clock"></i> Horas Semanales</th>
+                                        <td>{actividades.horasSemanales}</td>
+                                    </tr>
+                                    <tr>
+                                        <th style={{ color: '#212529' }}><i className="fas fa-calendar-alt"></i> Horas Semestre</th>
+                                        <td>{actividades.horasSemestre}</td>
+                                    </tr>
+                                    <tr>
+                                        <th style={{ color: '#212529' }}><i className="fas fa-align-left"></i> Descripción</th>
+                                        <td>{actividades.descripcion}</td>
+                                    </tr>
+                                    <tr>
+                                        <th style={{ color: '#212529' }}><i className="fas fa-box"></i> Producto</th>
+                                        <td>{actividades.producto}</td>
+                                    </tr>
+                                    <tr>
+                                        <th style={{ color: '#212529' }}><i className="fas fa-calendar-alt"></i> ID Agenda</th>
+                                        <td>{actividades.agendaId.id}</td>
+                                    </tr>
+                                    <tr>
+                                        <th style={{ color: '#212529' }}><i className="fas fa-folder-open"></i> Agenda</th>
+                                        <td>{actividades.agendaId.name}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
-                    <Link className='btn btn-primary my-2' to={"/HomeActividad"}>Regresar</Link>
+                    <div className="text-center mt-4">
+                        <Link className='btn btn-outline-warning my-2 mx-2' to={`/EditActividad/${id}`}>
+                            <i className="fas fa-edit"></i> Editar
+                        </Link>
+                        <button
+                            type='button'
+                            className='btn btn-outline-primary mx-2'
+                            onClick={() => navigate(-1)}
+                        >
+                            <i className="fas fa-arrow-left"></i> Regresar
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

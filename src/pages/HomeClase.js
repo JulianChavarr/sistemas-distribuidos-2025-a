@@ -5,8 +5,6 @@ import { Link, useParams } from 'react-router-dom';
 export default function HomeClase() {
     const [clases, setClases] = useState([]);
 
-    const {id} = useParams();
-
     useEffect(() => {
         loadClases();
     }, []);

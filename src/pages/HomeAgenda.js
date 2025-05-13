@@ -4,8 +4,7 @@ import { Link, useParams } from 'react-router-dom';
 
 export default function HomeAgenda() {
     const [agendas, setAgendas] = useState([]);
-
-    const { id } = useParams();
+    const { id } = useParams(); // Obtiene el id del usuario desde la URL
 
     useEffect(() => {
         loadAgendas();
@@ -14,9 +13,10 @@ export default function HomeAgenda() {
     const loadAgendas = async () => {
         try {
             const result = await axios.get("http://54.165.104.165:8080/api/agenda");
-            console.log("API Response:", result.data); // Debugging: Log the API response
             if (Array.isArray(result.data.data)) {
-                setAgendas(result.data.data); // Access the nested array
+                // Filtrar agendas por usuarioId
+                const filteredAgendas = result.data.data.filter(agenda => agenda.usuarioId.id === parseInt(id, 10));
+                setAgendas(filteredAgendas);
             } else {
                 console.error("API did not return an array:", result.data);
                 setAgendas([]); // Fallback to an empty array
@@ -41,27 +41,25 @@ export default function HomeAgenda() {
     return (
         <div className='container'>
             <div className='d-flex justify-content-end py-3'>
-                <Link className="btn btn-primary me-2" to="/">Usuarios</Link>
-                <Link className="btn btn-success me-2" to="/HomeAgenda">Agendas</Link>
-                <Link className="btn btn-danger me-2" to="/HomeActividad">Actividades</Link>
-                <Link className="btn btn-warning" to="/HomeClase">Clases</Link>
+                <Link className="btn btn-success me-2" to={`/AddAgenda/${id}`}>
+                    <i className="fas fa-calendar-plus"></i> Nueva Agenda
+                </Link>
+                <Link className="btn btn-primary me-2" to={`/`}>
+                    <i className="fas fa-arrow-circle-left"></i> Volver
+                </Link>
             </div>
             <div className='py-0'>
-                <table className="table border shadow">
-                    <thead>
+                <table className="table table-hover border shadow">
+                    <thead className="table-dark">
                         <tr>
                             <th scope="col">#</th>
-                            <th scope="col">ID Agenda</th>
+                            <th scope="col">ID</th>
                             <th scope="col">Nombre</th>
-                            <th scope="col">Facultad</th>
-                            <th scope="col">Programa</th>
                             <th scope="col">Periodo</th>
                             <th scope="col">Creación</th>
                             <th scope="col">Finalización</th>
-                            <th scope="col">ID Usuario</th>
-                            <th scope="col">Usuario</th>
-                            <th scope="col">Rol</th>
-                            <th scope="col">Acción</th>
+                            <th scope="col" style={{ width: '150px', textAlign: 'center' }}>Formulario</th>
+                            <th scope="col" style={{ width: '200px', textAlign: 'center' }}>Acción</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -70,22 +68,26 @@ export default function HomeAgenda() {
                                 <th scope="row">{index + 1}</th>
                                 <td>{agenda.id}</td>
                                 <td>{agenda.name}</td>
-                                <td>{agenda.facultad}</td>
-                                <td>{agenda.programa}</td>
                                 <td>{agenda.periodo}</td>
                                 <td>{agenda.fechaInicio}</td>
                                 <td>{agenda.fechaFin}</td>
-                                <td>{agenda.usuarioId.id}</td>
-                                <td>{agenda.usuarioId.username}</td>
-                                <td>{agenda.usuarioId.rol}</td>
-                                <td>
-                                    <Link className="btn btn-outline-primary mx-2" to={`/ViewAgenda/${agenda.id}`}>Ver</Link>
-                                    <Link className="btn btn-outline-warning mx-2" to={`/EditAgenda/${agenda.id}`}>Editar</Link>
+                                <td style={{ width: '200px', textAlign: 'center' }}>
+                                    <Link className="btn btn-outline-success btn-sm" to={`/HomeFormulario/${agenda.id}`}>
+                                        <i className="fas fa-edit"></i> Editar Formulario
+                                    </Link>
+                                </td>
+                                <td style={{ width: '300px', textAlign: 'center' }}>
+                                    <Link className="btn btn-outline-primary btn-sm mx-1" to={`/ViewAgenda/${agenda.id}`}>
+                                        <i className="fas fa-eye"></i> Ver
+                                    </Link>
+                                    <Link className="btn btn-outline-warning btn-sm mx-1" to={`/EditAgenda/${agenda.id}`}>
+                                        <i className="fas fa-edit"></i> Editar
+                                    </Link>
                                     <button
-                                        className="btn btn-outline-danger mx-2"
+                                        className="btn btn-outline-danger btn-sm mx-1"
                                         onClick={() => deleteAgendas(agenda.id)}
                                     >
-                                        Eliminar
+                                        <i className="fas fa-trash-alt"></i> Eliminar
                                     </button>
                                 </td>
                             </tr>
@@ -94,8 +96,5 @@ export default function HomeAgenda() {
                 </table>
             </div>
         </div>
-
-
-
     );
 }

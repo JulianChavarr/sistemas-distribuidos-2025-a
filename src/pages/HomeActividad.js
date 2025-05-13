@@ -5,8 +5,6 @@ import { Link, useParams } from 'react-router-dom';
 export default function HomeActividad() {
     const [actividades, setActividades] = useState([]);
 
-    const { id } = useParams();
-
     useEffect(() => {
         loadActividades();
     }, []);

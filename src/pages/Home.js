@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Link, useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 export default function Home() {
     const [usuarios, setUsuarios] = useState([]);
-
-    const { id } = useParams();
 
     useEffect(() => {
         loadUsuarios();
@@ -41,22 +39,19 @@ export default function Home() {
     return (
         <div className='container'>
             <div className='d-flex justify-content-end py-3'>
-                <Link className="btn btn-primary me-2" to="/">Usuarios</Link>
-                <Link className="btn btn-success me-2" to="/HomeAgenda">Agendas</Link>
-                <Link className="btn btn-danger me-2" to="/HomeActividad">Actividades</Link>
-                <Link className="btn btn-warning" to="/HomeClase">Clases</Link>
+                <Link className="btn btn-primary me-2" to="/AddUsuario">
+                    <i className="fas fa-user-plus"></i> Nuevo Usuario
+                </Link>
             </div>
             <div className='py-0'>
-                <table className="table border shadow">
-                    <thead>
+                <table className="table table-hover border shadow">
+                    <thead className="table-dark">
                         <tr>
                             <th scope="col">#</th>
                             <th scope="col">ID</th>
-                            <th scope="col">Nombre de Usuario</th>
-                            <th scope="col">Nombre</th>
-                            <th scope="col">Correo</th>
-                            <th scope="col">Contraseña</th>
+                            <th scope="col">Usuario</th>
                             <th scope="col">Rol</th>
+                            <th scope="col">Agendas</th>
                             <th scope="col">Acción</th>
                         </tr>
                     </thead>
@@ -66,18 +61,24 @@ export default function Home() {
                                 <th scope="row">{index + 1}</th>
                                 <td>{usuario.id}</td>
                                 <td>{usuario.username}</td>
-                                <td>{usuario.name}</td>
-                                <td>{usuario.correo}</td>
-                                <td>{usuario.password}</td>
                                 <td>{usuario.rol}</td>
-                                <td>
-                                    <Link className="btn btn-outline-primary mx-2" to={`/ViewUsuario/${usuario.id}`}>Ver</Link>
-                                    <Link className="btn btn-outline-warning mx-2" to={`/EditUsuario/${usuario.id}`}>Editar</Link>
+                                <td style={{ width: '150px', textAlign: 'center' }}>
+                                    <Link className="btn btn-outline-success btn-sm" to={`/HomeAgenda/${usuario.id}`}>
+                                        <i className="fas fa-calendar-alt"></i> Ver Agendas
+                                    </Link>
+                                </td>
+                                <td style={{ width: '300px', textAlign: 'center' }}>
+                                    <Link className="btn btn-outline-primary btn-sm mx-1" to={`/ViewUsuario/${usuario.id}`}>
+                                        <i className="fas fa-eye"></i> Ver
+                                    </Link>
+                                    <Link className="btn btn-outline-warning btn-sm mx-1" to={`/EditUsuario/${usuario.id}`}>
+                                        <i className="fas fa-edit"></i> Editar
+                                    </Link>
                                     <button
-                                        className="btn btn-outline-danger mx-2"
+                                        className="btn btn-outline-danger btn-sm mx-1"
                                         onClick={() => deleteUsuarios(usuario.id)}
                                     >
-                                        Eliminar
+                                        <i className="fas fa-trash-alt"></i> Eliminar
                                     </button>
                                 </td>
                             </tr>
@@ -86,8 +87,5 @@ export default function Home() {
                 </table>
             </div>
         </div>
-
-
-
     );
 }
