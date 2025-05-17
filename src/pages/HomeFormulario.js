@@ -1,20 +1,177 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
+import ExcelJS from 'exceljs';
+import { saveAs } from 'file-saver';
 
 export default function HomeFormulario() {
+    // Estado para el nombre del archivo
+    const [nombreArchivo, setNombreArchivo] = useState('Agenda_Completada.xlsx');
+
+    function ExportarExcel() {
+        const handleExport = async () => {
+
+            const response = await fetch('/Plantilla_Agenda.xlsx');
+            const arrayBuffer = await response.arrayBuffer();
+
+            const workbook = new ExcelJS.Workbook();
+            await workbook.xlsx.load(arrayBuffer);
+
+            const worksheet = workbook.getWorksheet(1);
+
+            worksheet.getCell('C2').value = clases[0]?.agendaId.name || '';
+            worksheet.getCell('E4').value = `VIGENCIA: ${clases[0]?.agendaId.fechaInicio || ''}`;
+            worksheet.getCell('C6').value = clases[0]?.agendaId.usuarioId.name || '';
+            worksheet.getCell('B7').value = clases[0]?.agendaId.facultad || '';
+            worksheet.getCell('F7').value = clases[0]?.agendaId.programa || '';
+            worksheet.getCell('B8').value = clases[0]?.agendaId.fechaFin || '';
+            worksheet.getCell('F8').value = clases[0]?.agendaId.periodo || '';
+
+            // Agregar Clases
+            const startRowClases = 14;
+            const maxClases = 20;
+
+            clases.slice(0, maxClases).forEach((clase, idx) => {
+                const row = startRowClases + idx;
+                worksheet.getCell(`A${row}`).value = clase?.name || '';
+                worksheet.getCell(`C${row}`).value = clase?.programa || '';
+                worksheet.getCell(`D${row}`).value = clase?.grupo || '';
+                worksheet.getCell(`E${row}`).value = clase?.sede || '';
+                worksheet.getCell(`F${row}`).value = clase?.horasSemanales || '';
+                worksheet.getCell(`H${row}`).value = clase?.horasSemestre || '';
+            });
+
+
+            // Agregar Actividades
+            const startRowActividadesAcadémicas = 29;
+            const maxActividadesAcadémicas = 33;
+
+            let actividadRowAcadémicas = startRowActividadesAcadémicas;
+            actividades.slice(0, maxActividadesAcadémicas).forEach((actividad) => {
+                if (actividad?.categoria === 'ACADÉMICAS') {
+                    worksheet.getCell(`A${actividadRowAcadémicas}`).value = actividad?.subCategoria || '';
+                    worksheet.getCell(`D${actividadRowAcadémicas}`).value = actividad?.horasSemanales || '';
+                    worksheet.getCell(`E${actividadRowAcadémicas}`).value = actividad?.horasSemestre || '';
+                    worksheet.getCell(`F${actividadRowAcadémicas}`).value = actividad?.descripcion || '';
+                    worksheet.getCell(`H${actividadRowAcadémicas}`).value = actividad?.producto || '';
+                    actividadRowAcadémicas++; // Solo avanza si se insertó una actividad válida
+                }
+            });
+
+            const startRowActividadesFormativas = 35;
+            const maxActividadesFormativas = 39;
+
+            let actividadRowFormativas = startRowActividadesFormativas;
+            actividades.slice(0, maxActividadesFormativas).forEach((actividad) => {
+                if (actividad?.categoria === 'FORMATIVAS') {
+                    worksheet.getCell(`A${actividadRowFormativas}`).value = actividad?.subCategoria || '';
+                    worksheet.getCell(`D${actividadRowFormativas}`).value = actividad?.horasSemanales || '';
+                    worksheet.getCell(`E${actividadRowFormativas}`).value = actividad?.horasSemestre || '';
+                    worksheet.getCell(`F${actividadRowFormativas}`).value = actividad?.descripcion || '';
+                    worksheet.getCell(`H${actividadRowFormativas}`).value = actividad?.producto || '';
+                    actividadRowFormativas++; // Solo avanza si se insertó una actividad válida
+                }
+            });
+
+            const startRowActividadesCientíficas = 44;
+            const maxActividadesCientíficas = 48;
+
+            let actividadRowCientíficas = startRowActividadesCientíficas;
+            actividades.slice(0, maxActividadesCientíficas).forEach((actividad) => {
+                if (actividad?.categoria === 'CIENTÍFICAS') {
+                    worksheet.getCell(`A${actividadRowCientíficas}`).value = actividad?.subCategoria || '';
+                    worksheet.getCell(`D${actividadRowCientíficas}`).value = actividad?.horasSemanales || '';
+                    worksheet.getCell(`E${actividadRowCientíficas}`).value = actividad?.horasSemestre || '';
+                    worksheet.getCell(`F${actividadRowCientíficas}`).value = actividad?.descripcion || '';
+                    worksheet.getCell(`H${actividadRowCientíficas}`).value = actividad?.producto || '';
+                    actividadRowCientíficas++; // Solo avanza si se insertó una actividad válida
+                }
+            });
+
+            const startRowActividadesExtensión = 54;
+            const maxActividadesExtensión = 58;
+
+            let actividadRowExtensión = startRowActividadesExtensión;
+            actividades.slice(0, maxActividadesExtensión).forEach((actividad) => {
+                if (actividad?.categoria === 'EXTENSIÓN') {
+                    worksheet.getCell(`A${actividadRowExtensión}`).value = actividad?.subCategoria || '';
+                    worksheet.getCell(`D${actividadRowExtensión}`).value = actividad?.horasSemanales || '';
+                    worksheet.getCell(`E${actividadRowExtensión}`).value = actividad?.horasSemestre || '';
+                    worksheet.getCell(`F${actividadRowExtensión}`).value = actividad?.descripcion || '';
+                    worksheet.getCell(`H${actividadRowExtensión}`).value = actividad?.producto || '';
+                    actividadRowExtensión++; // Solo avanza si se insertó una actividad válida
+                }
+            });
+
+            const startRowActividadesCulturales = 60;
+            const maxActividadesCulturales = 64;
+
+            let actividadRowCulturales = startRowActividadesCulturales;
+            actividades.slice(0, maxActividadesCulturales).forEach((actividad) => {
+                if (actividad?.categoria === 'CULTURALES') {
+                    worksheet.getCell(`A${actividadRowCulturales}`).value = actividad?.subCategoria || '';
+                    worksheet.getCell(`D${actividadRowCulturales}`).value = actividad?.horasSemanales || '';
+                    worksheet.getCell(`E${actividadRowCulturales}`).value = actividad?.horasSemestre || '';
+                    worksheet.getCell(`F${actividadRowCulturales}`).value = actividad?.descripcion || '';
+                    worksheet.getCell(`H${actividadRowCulturales}`).value = actividad?.producto || '';
+                    actividadRowCulturales++; // Solo avanza si se insertó una actividad válida
+                }
+            });
+
+            const startRowActividadesAdministrativa = 70;
+            const maxActividadesAdministrativa = 79;
+
+            let actividadRowAdministrativa = startRowActividadesAdministrativa;
+            actividades.slice(0, maxActividadesAdministrativa).forEach((actividad) => {
+                if (actividad?.categoria === 'ADMINISTRATIVA') {
+                    worksheet.getCell(`A${actividadRowAdministrativa}`).value = actividad?.subCategoria || '';
+                    worksheet.getCell(`D${actividadRowAdministrativa}`).value = actividad?.horasSemanales || '';
+                    worksheet.getCell(`E${actividadRowAdministrativa}`).value = actividad?.horasSemestre || '';
+                    worksheet.getCell(`F${actividadRowAdministrativa}`).value = actividad?.descripcion || '';
+                    worksheet.getCell(`H${actividadRowAdministrativa}`).value = actividad?.producto || '';
+                    actividadRowAdministrativa++; // Solo avanza si se insertó una actividad válida
+                }
+            });
+
+            const buffer = await workbook.xlsx.writeBuffer();
+            // Usa el nombre del archivo ingresado, asegurando extensión .xlsx
+            let nombreFinal = nombreArchivo.trim();
+            if (!nombreFinal.toLowerCase().endsWith('.xlsx')) {
+                nombreFinal += '.xlsx';
+            }
+            saveAs(new Blob([buffer]), nombreFinal);
+        };
+
+        return (
+            <div className="d-flex align-items-center mb-2">
+                <input
+                    type="text"
+                    className="form-control me-2"
+                    style={{ maxWidth: 250 }}
+                    value={nombreArchivo}
+                    onChange={e => setNombreArchivo(e.target.value)}
+                    placeholder="Nombre del archivo"
+                />
+                <button className="btn btn-success" onClick={handleExport}>
+                    <i className="fas fa-file-excel"></i> Exportar Excel
+                </button>
+            </div>
+        );
+    }
+
     const navigate = useNavigate();
     const { id } = useParams(); // Obtén el id del usuario y el id de la agenda desde la URL
 
     // Estados y funciones para HomeClase
     const [clases, setClases] = useState([]);
-    const loadClases = async () => {
+    const loadClases = useCallback(async () => {
         try {
             const result = await axios.get("http://54.165.104.165:8080/api/clase");
             if (Array.isArray(result.data.data)) {
                 // Filtrar clases por usuarioId y agendaId
                 const filteredClases = result.data.data.filter(clase => clase.agendaId.id === parseInt(id, 10));
                 setClases(filteredClases);
+                console.log(filteredClases);
             } else {
                 console.error("API did not return an array:", result.data);
                 setClases([]); // Fallback to an empty array
@@ -23,7 +180,7 @@ export default function HomeFormulario() {
             console.error("Error fetching classes:", error);
             setClases([]); // Fallback to an empty array in case of error
         }
-    };
+    }, [id]);
     const deleteClases = async (claseId) => {
         try {
             await axios.delete(`http://54.165.104.165:8080/api/clase/${claseId}`);
@@ -35,13 +192,14 @@ export default function HomeFormulario() {
 
     // Estados y funciones para HomeActividad
     const [actividades, setActividades] = useState([]);
-    const loadActividades = async () => {
+    const loadActividades = useCallback(async () => {
         try {
             const result = await axios.get("http://54.165.104.165:8080/api/actividad");
             if (Array.isArray(result.data.data)) {
                 // Filtrar actividades por usuarioId y agendaId
                 const filteredActividades = result.data.data.filter(actividad => actividad.agendaId.id === parseInt(id, 10));
                 setActividades(filteredActividades);
+                console.log(filteredActividades);
             } else {
                 console.error("API did not return an array:", result.data);
                 setActividades([]); // Fallback to an empty array
@@ -50,7 +208,7 @@ export default function HomeFormulario() {
             console.error("Error fetching activities:", error);
             setActividades([]); // Fallback to an empty array in case of error
         }
-    };
+    }, [id]);
     const deleteActividades = async (actividadId) => {
         try {
             await axios.delete(`http://54.165.104.165:8080/api/actividad/${actividadId}`);
@@ -63,10 +221,13 @@ export default function HomeFormulario() {
     useEffect(() => {
         loadClases();
         loadActividades();
-    }, [id]); // Ejecuta las funciones cuando cambien el id del usuario o el id de la agenda
+    }, [id, loadClases, loadActividades]); // Ejecuta las funciones cuando cambien el id del usuario o el id de la agenda
 
     return (
         <div className="container">
+            <div className="d-flex justify-content-end mt-4 mb-2">
+                <ExportarExcel />
+            </div>
             {/* Tabla de Clases */}
             <div className="mb-5">
                 <div className="d-flex justify-content-between align-items-center mb-3 py-3">

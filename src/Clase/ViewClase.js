@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 
 export default function ViewClase() {
@@ -23,18 +23,18 @@ export default function ViewClase() {
     const { id } = useParams();
     const navigate = useNavigate();
 
-    useEffect(() => {
-        loadClase();
-    }, []);
-
-    const loadClase = async () => {
+    const loadClase = useCallback(async () => {
         try {
             const result = await axios.get(`http://54.165.104.165:8080/api/clase/${id}`);
             setClases(result.data.data);
         } catch (error) {
             console.error("Error al cargar los detalles de la clase:", error);
         }
-    };
+    }, [id]);
+
+    useEffect(() => {
+        loadClase();
+    }, [loadClase]);
 
     return (
         <div>

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 
 export default function ViewActividad() {
@@ -19,22 +19,22 @@ export default function ViewActividad() {
         descripcion: "",
         producto: ""
     });
-
+    //
     const { id } = useParams();
     const navigate = useNavigate();
 
-    useEffect(() => {
-        loadActividad();
-    }, []);
-
-    const loadActividad = async () => {
+    const loadActividad = useCallback(async () => {
         try {
             const result = await axios.get(`http://54.165.104.165:8080/api/actividad/${id}`);
             setActividades(result.data.data);
         } catch (error) {
             console.error("Error al cargar los detalles de la actividad:", error);
         }
-    };
+    }, [id]);
+
+    useEffect(() => {
+        loadActividad();
+    }, [loadActividad]);
 
     return (
         <div className='container'>

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 
 export default function ViewAgenda() {
@@ -22,14 +22,14 @@ export default function ViewAgenda() {
     const { id } = useParams();
     const navigate = useNavigate();
 
-    useEffect(() => {
-        loadAgenda();
-    }, []);
-
-    const loadAgenda = async () => {
+    const loadAgenda = useCallback(async () => {
         const result = await axios.get(`http://54.165.104.165:8080/api/agenda/${id}`);
         setAgendas(result.data.data);
-    };
+    }, [id]);
+
+    useEffect(() => {
+        loadAgenda();
+    }, [loadAgenda]);
 
     return (
         <div>

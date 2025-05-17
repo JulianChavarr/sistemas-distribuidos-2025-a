@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 import { Link, useParams } from 'react-router-dom';
 
@@ -6,11 +6,7 @@ export default function HomeAgenda() {
     const [agendas, setAgendas] = useState([]);
     const { id } = useParams(); // Obtiene el id del usuario desde la URL
 
-    useEffect(() => {
-        loadAgendas();
-    }, []);
-
-    const loadAgendas = async () => {
+    const loadAgendas = useCallback(async () => {
         try {
             const result = await axios.get("http://54.165.104.165:8080/api/agenda");
             if (Array.isArray(result.data.data)) {
@@ -25,8 +21,12 @@ export default function HomeAgenda() {
             console.error("Error fetching data:", error);
             setAgendas([]); // Fallback to an empty array in case of error
         }
-    };
+    }, [id]);
 
+    useEffect(() => {
+        loadAgendas();
+    }, [loadAgendas]);
+    //
     const deleteAgendas = async (id) => {
         console.log("ID a eliminar:", id); // Verifica el ID
         try {

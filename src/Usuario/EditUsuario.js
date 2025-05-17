@@ -1,12 +1,12 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import { useNavigate, useParams } from 'react-router-dom';
 
 export default function EditUsuario() {
 
     let navigate = useNavigate();
 
-    const {id} = useParams();
+    const { id } = useParams();
 
     const [usuarios, setUsuarios] = useState({
         status: true,
@@ -15,8 +15,10 @@ export default function EditUsuario() {
         name: "",
         correo: "",
         password: "",
-        rol: ""
+        rol: "PROFESOR"
     });
+
+    const [errores, setErrores] = useState({});
 
     const { username, name, correo, password, rol } = usuarios;
 
@@ -24,15 +26,29 @@ export default function EditUsuario() {
         setUsuarios({ ...usuarios, [e.target.name]: e.target.value });
     }
 
+    const loadUsuario = useCallback(async () => {
+        console.log("ID enviado:", id); // Verifica el ID
+        try {
+            const result = await axios.get(`http://54.165.104.165:8080/api/usuario/${id}`);
+            setUsuarios(result.data.data); // Asegúrate de que el servidor devuelva los datos correctamente
+        } catch (error) {
+            console.error("Error al cargar el usuario:", error);
+        }
+    }, [id]);
+
     useEffect(() => {
-    
+
         loadUsuario();
 
-    }, []);
+    }, [loadUsuario]);
 
     const onSubmit = async (e) => {
         e.preventDefault();
-        console.log("Datos enviados:", usuarios); // Verifica los datos
+        const nuevosErrores = validar();
+        if (Object.keys(nuevosErrores).length > 0) {
+            setErrores(nuevosErrores);
+            return;
+        }
         try {
             await axios.put(`http://54.165.104.165:8080/api/usuario/${id}`, usuarios);
             navigate("/");
@@ -41,15 +57,78 @@ export default function EditUsuario() {
         }
     }
 
-    const loadUsuario = async () => {
-        console.log("ID enviado:", id); // Verifica el ID
-        try {
-            const result = await axios.get(`http://54.165.104.165:8080/api/usuario/${id}`);
-            setUsuarios(result.data.data); // Asegúrate de que el servidor devuelva los datos correctamente
-        } catch (error) {
-            console.error("Error al cargar el usuario:", error);
+    const validar = () => {
+        const nuevosErrores = {};
+        if (!username) {
+            nuevosErrores.username = "El nombre de usuario es obligatorio";
+        } else {
+            if (/\s/.test(username)) {
+                nuevosErrores.username = "El nombre de usuario no puede contener espacios";
+            } else if (!/\d/.test(username)) {
+                nuevosErrores.username = "El nombre de usuario debe contener al menos un número";
+            } else if (!/[A-Z]/.test(username)) {
+                nuevosErrores.username = "El nombre de usuario debe contener al menos una letra mayúscula";
+            } else if (!/^([A-Za-z0-9_*]+)$/.test(username)) {
+                nuevosErrores.username = "Solo se permiten letras, números, _ o *";
+            } else if (!/[_*]/.test(username)) {
+                nuevosErrores.username = "Debe contener al menos un _ o *";
+            } else if (username.length < 6) {
+                nuevosErrores.username = "El nombre de usuario debe tener al menos 6 caracteres";
+            } else if (username.length > 20) {
+                nuevosErrores.username = "El nombre de usuario no puede tener más de 20 caracteres";
+            } else if (/^[_*]/.test(username) || /[_*]$/.test(username)) {
+                nuevosErrores.username = "El nombre de usuario no debe iniciar ni terminar con _ o *";
+            } else if (/^\d+$/.test(username)) {
+                nuevosErrores.username = "El nombre de usuario no puede ser solo números";
+            } else if (/^[A-Z]+$/.test(username)) {
+                nuevosErrores.username = "El nombre de usuario no puede ser solo letras mayúsculas";
+            }
         }
-    }
+        if (!name) {
+            nuevosErrores.name = "El nombre es obligatorio";
+        } else if (name !== name.toUpperCase()) {
+            nuevosErrores.name = "El nombre solo puede contener letras mayúsculas";
+        } else if (!/^[A-ZÁÉÍÓÚÑ\s]+$/.test(name)) {
+            nuevosErrores.name = "El nombre solo puede contener letras mayúsculas y espacios";
+        } else if (name.length < 2) {
+            nuevosErrores.name = "El nombre debe tener al menos 2 letras";
+        } else if (name.length > 50) {
+            nuevosErrores.name = "El nombre no puede tener más de 50 letras";
+        } else if (/^\s|\s$/.test(name)) {
+            nuevosErrores.name = "El nombre no debe iniciar ni terminar con espacios";
+        } else if (/\s{2,}/.test(name)) {
+            nuevosErrores.name = "El nombre no debe tener espacios dobles";
+        } else if (!name.trim()) {
+            nuevosErrores.name = "El nombre no puede ser solo espacios";
+        }
+        if (!correo) nuevosErrores.correo = "El correo es obligatorio";
+        else if (!/\S+@\S+\.\S+/.test(correo)) nuevosErrores.correo = "Correo inválido";
+        else if (/^\s|\s$/.test(correo)) {
+            nuevosErrores.correo = "El correo no debe iniciar ni terminar con espacios";
+        } else if (/\s/.test(correo)) {
+            nuevosErrores.correo = "El correo no debe contener espacios";
+        } else if (correo.length > 100) {
+            nuevosErrores.correo = "El correo no puede tener más de 100 caracteres";
+        }
+        if (!password) nuevosErrores.password = "La contraseña es obligatoria";
+        else if (password.length < 8) {
+            nuevosErrores.password = "La contraseña debe tener al menos 8 caracteres";
+        } else if (password.length > 32) {
+            nuevosErrores.password = "La contraseña no puede tener más de 32 caracteres";
+        } else if (!/[A-Z]/.test(password)) {
+            nuevosErrores.password = "La contraseña debe contener al menos una letra mayúscula";
+        } else if (!/[a-z]/.test(password)) {
+            nuevosErrores.password = "La contraseña debe contener al menos una letra minúscula";
+        } else if (!/\d/.test(password)) {
+            nuevosErrores.password = "La contraseña debe contener al menos un número";
+        } else if (!/[!@#$%^&*()_\-+=;':"|,.<>?]/.test(password)) {
+            nuevosErrores.password = "La contraseña debe contener al menos un carácter especial";
+        } else if (/\s/.test(password)) {
+            nuevosErrores.password = "La contraseña no debe contener espacios";
+        }
+        if (!rol) nuevosErrores.rol = "El rol es obligatorio";
+        return nuevosErrores;
+    };
 
     return (
         <div>
@@ -77,6 +156,7 @@ export default function EditUsuario() {
                                             value={username}
                                             onChange={(e) => onInputChange(e)}
                                         />
+                                        {errores.username && <div className="text-danger">{errores.username}</div>}
                                     </div>
                                     <div className='mb-3'>
                                         <label htmlFor='Name' className='form-label' style={{ color: '#212529' }}>
@@ -90,6 +170,7 @@ export default function EditUsuario() {
                                             value={name}
                                             onChange={(e) => onInputChange(e)}
                                         />
+                                        {errores.name && <div className="text-danger">{errores.name}</div>}
                                     </div>
                                     <div className='mb-3'>
                                         <label htmlFor='Correo' className='form-label' style={{ color: '#212529' }}>
@@ -103,6 +184,7 @@ export default function EditUsuario() {
                                             value={correo}
                                             onChange={(e) => onInputChange(e)}
                                         />
+                                        {errores.correo && <div className="text-danger">{errores.correo}</div>}
                                     </div>
                                     <div className='mb-3'>
                                         <label htmlFor='Password' className='form-label' style={{ color: '#212529' }}>
@@ -116,6 +198,7 @@ export default function EditUsuario() {
                                             value={password}
                                             onChange={(e) => onInputChange(e)}
                                         />
+                                        {errores.password && <div className="text-danger">{errores.password}</div>}
                                     </div>
                                     <div className='mb-3'>
                                         <label htmlFor='Rol' className='form-label' style={{ color: '#212529' }}>
@@ -124,11 +207,11 @@ export default function EditUsuario() {
                                         <input
                                             type='text'
                                             className='form-control'
-                                            placeholder='Ingrese su rol'
                                             name='rol'
-                                            value={rol}
-                                            onChange={(e) => onInputChange(e)}
+                                            value="PROFESOR"
+                                            readOnly
                                         />
+                                        {errores.rol && <div className="text-danger">{errores.rol}</div>}
                                     </div>
                                     <div className="text-center">
                                         <button type='submit' className='btn btn-outline-primary mx-2'>

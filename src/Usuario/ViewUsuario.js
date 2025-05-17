@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 
 export default function ViewUsuario() {
@@ -10,20 +10,20 @@ export default function ViewUsuario() {
         name: "",
         correo: "",
         password: "",
-        rol: ""
+        rol: "PROFESOR"
     });
 
     const { id } = useParams();
     const navigate = useNavigate();
 
-    useEffect(() => {
-        loadUsuario();
-    }, []);
-
-    const loadUsuario = async () => {
+    const loadUsuario = useCallback(async () => {
         const result = await axios.get(`http://54.165.104.165:8080/api/usuario/${id}`);
         setUsuarios(result.data.data);
-    };
+    }, [id]);
+
+    useEffect(() => {
+        loadUsuario();
+    }, [loadUsuario]);
 
     return (
         <div>

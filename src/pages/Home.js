@@ -8,7 +8,7 @@ export default function Home() {
     useEffect(() => {
         loadUsuarios();
     }, []);
-
+    
     const loadUsuarios = async () => {
         try {
             const result = await axios.get("http://54.165.104.165:8080/api/usuario");

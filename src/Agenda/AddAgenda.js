@@ -23,6 +23,8 @@ export default function AddAgenda() {
         fechaFin: ""
     });
 
+    const [errores, setErrores] = useState({});
+
     const { usuarioId, name, facultad, programa, periodo, fechaInicio, fechaFin } = agendas;
 
     const onInputChange = (e) => {
@@ -44,13 +46,99 @@ export default function AddAgenda() {
 
     }
 
+    const validar = () => {
+        const errores = {};
+        if (!name) {
+            errores.name = "El nombre de la agenda es obligatorio";
+        } else if (!/[A-Z]/.test(name)) {
+            errores.name = "Debe contener al menos una letra mayúscula";
+        } else if (!/[a-z]/.test(name)) {
+            errores.name = "Debe contener al menos una letra minúscula";
+        } else if (name.length < 3) {
+            errores.name = "Debe tener al menos 3 caracteres";
+        } else if (name.length > 50) {
+            errores.name = "No puede tener más de 50 caracteres";
+        } else if (!name.trim()) {
+            errores.name = "El nombre no puede ser solo espacios";
+        } else if (!/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/.test(name)) {
+            errores.name = "El nombre solo puede contener letras y espacios";
+        } else if (/\s{2,}/.test(name)) {
+            errores.name = "El nombre no debe tener espacios dobles";
+        } else if (name === name.toUpperCase() || name === name.toLowerCase()) {
+            errores.name = "El nombre debe tener mayúsculas y minúsculas";
+        }
+        if (!facultad) {
+            errores.facultad = "La facultad es obligatoria";
+        } else if (facultad !== facultad.toUpperCase()) {
+            errores.facultad = "La facultad solo puede contener letras mayúsculas";
+        } else if (facultad.length < 3) {
+            errores.facultad = "La facultad debe tener al menos 3 caracteres";
+        } else if (facultad.length > 50) {
+            errores.facultad = "La facultad no puede tener más de 50 caracteres";
+        } else if (!facultad.trim()) {
+            errores.facultad = "La facultad no puede ser solo espacios";
+        } else if (!/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/.test(facultad)) {
+            errores.facultad = "La facultad solo puede contener letras y espacios";
+        } else if (/\s{2,}/.test(facultad)) {
+            errores.facultad = "La facultad no debe tener espacios dobles";
+        } else if (/^\s|\s$/.test(facultad)) {
+            errores.facultad = "La facultad no debe iniciar ni terminar con espacios";
+        }
+        if (!programa) {
+            errores.programa = "El programa es obligatorio";
+        } else if (programa !== programa.toUpperCase()) {
+            errores.programa = "El programa solo puede contener letras mayúsculas";
+        } else if (programa.length < 3) {
+            errores.programa = "El programa debe tener al menos 3 caracteres";
+        } else if (programa.length > 50) {
+            errores.programa = "El programa no puede tener más de 50 caracteres";
+        } else if (!programa.trim()) {
+            errores.programa = "El programa no puede ser solo espacios";
+        } else if (!/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/.test(programa)) {
+            errores.programa = "El programa solo puede contener letras y espacios";
+        } else if (/\s{2,}/.test(programa)) {
+            errores.programa = "El programa no debe tener espacios dobles";
+        } else if (/^\s|\s$/.test(programa)) {
+            errores.programa = "El programa no debe iniciar ni terminar con espacios";
+        }
+        if (!periodo) {
+            errores.periodo = "El periodo es obligatorio";
+        } else if (/\s/.test(periodo)) {
+            errores.periodo = "El periodo no debe contener espacios";
+        } else if (periodo.length !== 6) {
+            errores.periodo = "El periodo debe tener exactamente 6 caracteres";
+        } else if (!/^\d{4}-[A-Z]$/.test(periodo)) {
+            errores.periodo = "El periodo debe tener el formato '2025-A' (año, guion y letra mayúscula)";
+        }
+        if (!fechaInicio) {
+            errores.fechaInicio = "La fecha de inicio es obligatoria";
+        } else if (new Date(fechaInicio) < new Date()) {
+            errores.fechaInicio = "La fecha de inicio no puede ser anterior a hoy";
+        } else if (fechaFin && new Date(fechaInicio) > new Date(fechaFin)) {
+            errores.fechaInicio = "La fecha de inicio no puede ser posterior a la fecha de fin";
+        }
+        if (!fechaFin) {
+            errores.fechaFin = "La fecha de fin es obligatoria";
+        } else if (fechaInicio && new Date(fechaFin) < new Date(fechaInicio)) {
+            errores.fechaFin = "La fecha de fin no puede ser anterior a la fecha de inicio";
+        } else if (fechaInicio && new Date(fechaFin).getTime() === new Date(fechaInicio).getTime()) {
+            errores.fechaFin = "La fecha de fin no puede ser igual a la fecha de inicio";
+        } else if (new Date(fechaFin) < new Date()) {
+            errores.fechaFin = "La fecha de fin no puede ser anterior a hoy";
+        }
+
+        return errores;
+    };
+
     const onSubmit = async (e) => {
         e.preventDefault();
-
-        console.log("Datos enviados al servidor:", agendas);
-
+        const nuevosErrores = validar();
+        if (Object.keys(nuevosErrores).length > 0) {
+            setErrores(nuevosErrores);
+            return;
+        }
         await axios.post("http://54.165.104.165:8080/api/agenda", agendas)
-        navigate(`/HomeAgenda/${usuarioId.id}`); // Redirige a la página de inicio de agenda
+        navigate(`/HomeAgenda/${usuarioId.id}`);
     }
 
     return (
@@ -67,20 +155,6 @@ export default function AddAgenda() {
                         <div className='card-body'>
                             <form onSubmit={(e) => onSubmit(e)}>
                                 <div className='mb-3'>
-                                    <label htmlFor='UsuarioId' className='form-label' style={{ color: '#212529' }}>
-                                        <i className="fas fa-user"></i> Usuario ID
-                                    </label>
-                                    <input
-                                        type='number'
-                                        className='form-control'
-                                        placeholder='Ingrese su ID de usuario'
-                                        name='usuarioId'
-                                        value={usuarioId.id || 0}
-                                        onChange={(e) => onInputChange(e)}
-                                        readOnly
-                                    />
-                                </div>
-                                <div className='mb-3'>
                                     <label htmlFor='Name' className='form-label' style={{ color: '#212529' }}>
                                         <i className="fas fa-book"></i> Nombre
                                     </label>
@@ -92,6 +166,7 @@ export default function AddAgenda() {
                                         value={name}
                                         onChange={(e) => onInputChange(e)}
                                     />
+                                    {errores.name && <div className="text-danger">{errores.name}</div>}
                                 </div>
                                 <div className='mb-3'>
                                     <label htmlFor='Facultad' className='form-label' style={{ color: '#212529' }}>
@@ -105,6 +180,7 @@ export default function AddAgenda() {
                                         value={facultad}
                                         onChange={(e) => onInputChange(e)}
                                     />
+                                    {errores.facultad && <div className="text-danger">{errores.facultad}</div>}
                                 </div>
                                 <div className='mb-3'>
                                     <label htmlFor='Programa' className='form-label' style={{ color: '#212529' }}>
@@ -118,6 +194,7 @@ export default function AddAgenda() {
                                         value={programa}
                                         onChange={(e) => onInputChange(e)}
                                     />
+                                    {errores.programa && <div className="text-danger">{errores.programa}</div>}
                                 </div>
                                 <div className='mb-3'>
                                     <label htmlFor='Periodo' className='form-label' style={{ color: '#212529' }}>
@@ -131,6 +208,7 @@ export default function AddAgenda() {
                                         value={periodo}
                                         onChange={(e) => onInputChange(e)}
                                     />
+                                    {errores.periodo && <div className="text-danger">{errores.periodo}</div>}
                                 </div>
                                 <div className='mb-3'>
                                     <label htmlFor='FechaInicio' className='form-label' style={{ color: '#212529' }}>
@@ -144,6 +222,7 @@ export default function AddAgenda() {
                                         value={fechaInicio}
                                         onChange={(e) => onInputChange(e)}
                                     />
+                                    {errores.fechaInicio && <div className="text-danger">{errores.fechaInicio}</div>}
                                 </div>
                                 <div className='mb-3'>
                                     <label htmlFor='FechaFin' className='form-label' style={{ color: '#212529' }}>
@@ -157,6 +236,7 @@ export default function AddAgenda() {
                                         value={fechaFin}
                                         onChange={(e) => onInputChange(e)}
                                     />
+                                    {errores.fechaFin && <div className="text-danger">{errores.fechaFin}</div>}
                                 </div>
                                 <div className="text-center">
                                     <button type='submit' className='btn btn-outline-primary mx-2'>

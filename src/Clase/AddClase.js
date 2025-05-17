@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 export default function AddClase() {
@@ -22,6 +22,8 @@ export default function AddClase() {
         horasSemestre: 1
     });
 
+    const [errores, setErrores] = useState({});
+
     const { agendaId, name, programa, grupo, sede, horasSemanales, horasSemestre } = clases;
 
     const onInputChange = (e) => {
@@ -41,8 +43,98 @@ export default function AddClase() {
         }
     };
 
+    const validar = () => {
+        const errores = {};
+        if (!name) {
+            errores.name = "El nombre de la clase es obligatorio";
+        } else if (name.length < 3) {
+            errores.name = "Debe tener al menos 3 caracteres";
+        } else if (name.length > 50) {
+            errores.name = "No puede tener más de 50 caracteres";
+        } else if (name !== name.toUpperCase()) {
+            errores.name = "Solo se permiten letras mayúsculas";
+        } else if (!/^[A-ZÁÉÍÓÚÑ\s]+$/.test(name)) {
+            errores.name = "Solo se permiten letras mayúsculas y espacios";
+        } else if (!name.trim()) {
+            errores.name = "El nombre no puede ser solo espacios";
+        } else if (/\s{2,}/.test(name)) {
+            errores.name = "El nombre no debe tener espacios dobles";
+        } else if (/^\s|\s$/.test(name)) {
+            errores.name = "El nombre no debe iniciar ni terminar con espacios";
+        }
+
+        if (!programa) {
+            errores.programa = "El programa es obligatorio";
+        } else if (programa.length < 3) {
+            errores.programa = "Debe tener al menos 3 caracteres";
+        } else if (programa.length > 50) {
+            errores.programa = "No puede tener más de 50 caracteres";
+        } else if (programa !== programa.toUpperCase()) {
+            errores.programa = "Solo se permiten letras mayúsculas";
+        } else if (!/^[A-ZÁÉÍÓÚÑ\s]+$/.test(programa)) {
+            errores.programa = "Solo se permiten letras mayúsculas y espacios";
+        } else if (!programa.trim()) {
+            errores.programa = "El programa no puede ser solo espacios";
+        } else if (/\s{2,}/.test(programa)) {
+            errores.programa = "El programa no debe tener espacios dobles";
+        } else if (/^\s|\s$/.test(programa)) {
+            errores.programa = "El programa no debe iniciar ni terminar con espacios";
+        }
+
+        if (!grupo) {
+            errores.grupo = "El grupo es obligatorio";
+        } else if (isNaN(grupo) || grupo <= 0) {
+            errores.grupo = "El grupo debe ser un número positivo";
+        } else if (!Number.isInteger(Number(grupo))) {
+            errores.grupo = "El grupo debe ser un número entero";
+        } else if (Number(grupo) > 99) {
+            errores.grupo = "El grupo no puede ser mayor a 99";
+        }
+
+        if (!sede) {
+            errores.sede = "La sede es obligatoria";
+        } else if (sede.length < 3) {
+            errores.sede = "Debe tener al menos 3 caracteres";
+        } else if (sede.length > 50) {
+            errores.sede = "No puede tener más de 50 caracteres";
+        } else if (sede !== sede.toUpperCase()) {
+            errores.sede = "Solo se permiten letras mayúsculas";
+        } else if (!/^[A-ZÁÉÍÓÚÑ\s]+$/.test(sede)) {
+            errores.sede = "Solo se permiten letras mayúsculas y espacios";
+        } else if (!sede.trim()) {
+            errores.sede = "La sede no puede ser solo espacios";
+        } else if (/\s{2,}/.test(sede)) {
+            errores.sede = "La sede no debe tener espacios dobles";
+        } else if (/^\s|\s$/.test(sede)) {
+            errores.sede = "La sede no debe iniciar ni terminar con espacios";
+        }
+
+        if (!horasSemanales) {
+            errores.horasSemanales = "Las horas semanales son obligatorias";
+        } else if (isNaN(horasSemanales) || horasSemanales <= 0) {
+            errores.horasSemanales = "Debe ser un número positivo";
+        } else if (!Number.isInteger(Number(horasSemanales))) {
+            errores.horasSemanales = "Debe ser un número entero";
+        }
+
+        if (!horasSemestre) {
+            errores.horasSemestre = "Las horas del semestre son obligatorias";
+        } else if (isNaN(horasSemestre) || horasSemestre <= 0) {
+            errores.horasSemestre = "Debe ser un número positivo";
+        } else if (!Number.isInteger(Number(horasSemestre))) {
+            errores.horasSemestre = "Debe ser un número entero";
+        }
+
+        return errores;
+    };
+
     const onSubmit = async (e) => {
         e.preventDefault();
+        const erroresValidacion = validar();
+        if (Object.keys(erroresValidacion).length > 0) {
+            setErrores(erroresValidacion);
+            return;
+        }
         try {
             await axios.post("http://54.165.104.165:8080/api/clase", clases);
             navigate(`/HomeFormulario/${agendaId.id}`); // Redirige a la página de inicio de formulario
@@ -50,6 +142,14 @@ export default function AddClase() {
             console.error("Error al registrar la clase:", error);
         }
     };
+
+    // Calcula horasSemestre automáticamente
+    useEffect(() => {
+        setClases((prev) => ({
+            ...prev,
+            horasSemestre: Number(prev.horasSemanales) > 0 ? Number(prev.horasSemanales) * 16 : 0
+        }));
+    }, [clases.horasSemanales]);
 
     return (
         <div className='container'>
@@ -65,20 +165,6 @@ export default function AddClase() {
                             </div>
                             <div className='card-body'>
                                 <div className='mb-3'>
-                                    <label htmlFor='AgendaId' className='form-label'>
-                                        <i className="fas fa-calendar-alt"></i> Agenda ID
-                                    </label>
-                                    <input
-                                        type='number'
-                                        className='form-control'
-                                        placeholder='Ingrese el ID de la agenda'
-                                        name='agendaId'
-                                        value={agendaId.id || 0}
-                                        onChange={(e) => onInputChange(e)}
-                                        readOnly
-                                    />
-                                </div>
-                                <div className='mb-3'>
                                     <label htmlFor='Name' className='form-label'>
                                         <i className="fas fa-book"></i> Nombre de la Clase
                                     </label>
@@ -90,6 +176,7 @@ export default function AddClase() {
                                         value={name}
                                         onChange={(e) => onInputChange(e)}
                                     />
+                                    {errores.name && <div className="text-danger">{errores.name}</div>}
                                 </div>
                                 <div className='mb-3'>
                                     <label htmlFor='Programa' className='form-label'>
@@ -103,6 +190,7 @@ export default function AddClase() {
                                         value={programa}
                                         onChange={(e) => onInputChange(e)}
                                     />
+                                    {errores.programa && <div className="text-danger">{errores.programa}</div>}
                                 </div>
                                 <div className='mb-3'>
                                     <label htmlFor='Grupo' className='form-label'>
@@ -116,6 +204,7 @@ export default function AddClase() {
                                         value={grupo}
                                         onChange={(e) => onInputChange(e)}
                                     />
+                                    {errores.grupo && <div className="text-danger">{errores.grupo}</div>}
                                 </div>
                                 <div className='mb-3'>
                                     <label htmlFor='Sede' className='form-label'>
@@ -129,6 +218,7 @@ export default function AddClase() {
                                         value={sede}
                                         onChange={(e) => onInputChange(e)}
                                     />
+                                    {errores.sede && <div className="text-danger">{errores.sede}</div>}
                                 </div>
                                 <div className='mb-3'>
                                     <label htmlFor='HorasSemanales' className='form-label'>
@@ -142,6 +232,7 @@ export default function AddClase() {
                                         value={horasSemanales}
                                         onChange={(e) => onInputChange(e)}
                                     />
+                                    {errores.horasSemanales && <div className="text-danger">{errores.horasSemanales}</div>}
                                 </div>
                                 <div className='mb-3'>
                                     <label htmlFor='HorasSemestre' className='form-label'>
@@ -150,11 +241,12 @@ export default function AddClase() {
                                     <input
                                         type='number'
                                         className='form-control'
-                                        placeholder='Ingrese las horas del semestre'
+                                        placeholder='Horas del semestre'
                                         name='horasSemestre'
                                         value={horasSemestre}
-                                        onChange={(e) => onInputChange(e)}
+                                        readOnly
                                     />
+                                    {errores.horasSemestre && <div className="text-danger">{errores.horasSemestre}</div>}
                                 </div>
                             </div>
                         </div>
