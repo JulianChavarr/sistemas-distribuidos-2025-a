@@ -29,6 +29,9 @@ export default function AddClase() {
     const onInputChange = (e) => {
         const { name, value } = e.target;
 
+        // Campos que deben ser siempre mayúsculas
+        const camposMayusculas = ["name", "programa", "sede"];
+
         if (name === "agendaId") {
             const parsedValue = parseInt(value, 10);
             setClases({
@@ -38,6 +41,8 @@ export default function AddClase() {
                     id: isNaN(parsedValue) ? 0 : parsedValue,
                 },
             });
+        } else if (camposMayusculas.includes(name)) {
+            setClases({ ...clases, [name]: value.toUpperCase() });
         } else {
             setClases({ ...clases, [name]: value });
         }
@@ -202,6 +207,7 @@ export default function AddClase() {
                                         placeholder='Ingrese el grupo'
                                         name='grupo'
                                         value={grupo}
+                                        min={1} // <-- Esto evita que el usuario seleccione un valor menor a 1
                                         onChange={(e) => onInputChange(e)}
                                     />
                                     {errores.grupo && <div className="text-danger">{errores.grupo}</div>}
@@ -230,6 +236,7 @@ export default function AddClase() {
                                         placeholder='Ingrese las horas semanales'
                                         name='horasSemanales'
                                         value={horasSemanales}
+                                        min={0}
                                         onChange={(e) => onInputChange(e)}
                                     />
                                     {errores.horasSemanales && <div className="text-danger">{errores.horasSemanales}</div>}

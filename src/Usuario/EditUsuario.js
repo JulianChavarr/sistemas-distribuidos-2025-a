@@ -23,7 +23,15 @@ export default function EditUsuario() {
     const { username, name, correo, password, rol } = usuarios;
 
     const onInputChange = (e) => {
-        setUsuarios({ ...usuarios, [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+        // Campos que deben ser siempre mayúsculas
+        const camposMayusculas = ["name"];
+
+        if (camposMayusculas.includes(name)) {
+            setUsuarios({ ...usuarios, [name]: value.toUpperCase() });
+        } else {
+            setUsuarios({ ...usuarios, [name]: value });
+        }
     }
 
     const loadUsuario = useCallback(async () => {

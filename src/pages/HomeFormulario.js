@@ -4,160 +4,158 @@ import axios from 'axios';
 import ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
 
+// Mueve ExportarExcel FUERA del componente principal
+function ExportarExcel({ nombreArchivo, setNombreArchivo, clases, actividades }) {
+    const handleExport = async () => {
+        const response = await fetch('/Plantilla_Agenda.xlsx');
+        const arrayBuffer = await response.arrayBuffer();
+        const workbook = new ExcelJS.Workbook();
+        await workbook.xlsx.load(arrayBuffer);
+        const worksheet = workbook.getWorksheet(1);
+
+        worksheet.getCell('C2').value = clases[0]?.agendaId.name || '';
+        worksheet.getCell('E4').value = `VIGENCIA: ${clases[0]?.agendaId.fechaInicio || ''}`;
+        worksheet.getCell('C6').value = clases[0]?.agendaId.usuarioId.name || '';
+        worksheet.getCell('B7').value = clases[0]?.agendaId.facultad || '';
+        worksheet.getCell('F7').value = clases[0]?.agendaId.programa || '';
+        worksheet.getCell('B8').value = clases[0]?.agendaId.fechaFin || '';
+        worksheet.getCell('F8').value = clases[0]?.agendaId.periodo || '';
+
+        // Agregar Clases
+        const startRowClases = 14;
+        const maxClases = 24;
+
+        clases.slice(0, maxClases).forEach((clase, idx) => {
+            const row = startRowClases + idx;
+            worksheet.getCell(`A${row}`).value = clase?.name || '';
+            worksheet.getCell(`C${row}`).value = clase?.programa || '';
+            worksheet.getCell(`D${row}`).value = clase?.grupo || '';
+            worksheet.getCell(`E${row}`).value = clase?.sede || '';
+            worksheet.getCell(`F${row}`).value = clase?.horasSemanales || '';
+            worksheet.getCell(`H${row}`).value = clase?.horasSemestre || '';
+        });
+
+
+        // Agregar Actividades
+        const startRowActividadesAcadémicas = 29;
+        const maxActividadesAcadémicas = 33;
+
+        let actividadRowAcadémicas = startRowActividadesAcadémicas;
+        actividades.slice(0, maxActividadesAcadémicas).forEach((actividad) => {
+            if (actividad?.categoria === 'ACADÉMICAS') {
+                worksheet.getCell(`A${actividadRowAcadémicas}`).value = actividad?.subCategoria || '';
+                worksheet.getCell(`D${actividadRowAcadémicas}`).value = actividad?.horasSemanales || '';
+                worksheet.getCell(`E${actividadRowAcadémicas}`).value = actividad?.horasSemestre || '';
+                worksheet.getCell(`F${actividadRowAcadémicas}`).value = actividad?.descripcion || '';
+                worksheet.getCell(`H${actividadRowAcadémicas}`).value = actividad?.producto || '';
+                actividadRowAcadémicas++; // Solo avanza si se insertó una actividad válida
+            }
+        });
+
+        const startRowActividadesFormativas = 35;
+        const maxActividadesFormativas = 39;
+
+        let actividadRowFormativas = startRowActividadesFormativas;
+        actividades.slice(0, maxActividadesFormativas).forEach((actividad) => {
+            if (actividad?.categoria === 'FORMATIVAS') {
+                worksheet.getCell(`A${actividadRowFormativas}`).value = actividad?.subCategoria || '';
+                worksheet.getCell(`D${actividadRowFormativas}`).value = actividad?.horasSemanales || '';
+                worksheet.getCell(`E${actividadRowFormativas}`).value = actividad?.horasSemestre || '';
+                worksheet.getCell(`F${actividadRowFormativas}`).value = actividad?.descripcion || '';
+                worksheet.getCell(`H${actividadRowFormativas}`).value = actividad?.producto || '';
+                actividadRowFormativas++; // Solo avanza si se insertó una actividad válida
+            }
+        });
+
+        const startRowActividadesCientíficas = 44;
+        const maxActividadesCientíficas = 48;
+
+        let actividadRowCientíficas = startRowActividadesCientíficas;
+        actividades.slice(0, maxActividadesCientíficas).forEach((actividad) => {
+            if (actividad?.categoria === 'CIENTÍFICAS') {
+                worksheet.getCell(`A${actividadRowCientíficas}`).value = actividad?.subCategoria || '';
+                worksheet.getCell(`D${actividadRowCientíficas}`).value = actividad?.horasSemanales || '';
+                worksheet.getCell(`E${actividadRowCientíficas}`).value = actividad?.horasSemestre || '';
+                worksheet.getCell(`F${actividadRowCientíficas}`).value = actividad?.descripcion || '';
+                worksheet.getCell(`H${actividadRowCientíficas}`).value = actividad?.producto || '';
+                actividadRowCientíficas++; // Solo avanza si se insertó una actividad válida
+            }
+        });
+
+        const startRowActividadesExtensión = 54;
+        const maxActividadesExtensión = 58;
+
+        let actividadRowExtensión = startRowActividadesExtensión;
+        actividades.slice(0, maxActividadesExtensión).forEach((actividad) => {
+            if (actividad?.categoria === 'EXTENSIÓN') {
+                worksheet.getCell(`A${actividadRowExtensión}`).value = actividad?.subCategoria || '';
+                worksheet.getCell(`D${actividadRowExtensión}`).value = actividad?.horasSemanales || '';
+                worksheet.getCell(`E${actividadRowExtensión}`).value = actividad?.horasSemestre || '';
+                worksheet.getCell(`F${actividadRowExtensión}`).value = actividad?.descripcion || '';
+                worksheet.getCell(`H${actividadRowExtensión}`).value = actividad?.producto || '';
+                actividadRowExtensión++; // Solo avanza si se insertó una actividad válida
+            }
+        });
+
+        const startRowActividadesCulturales = 60;
+        const maxActividadesCulturales = 64;
+
+        let actividadRowCulturales = startRowActividadesCulturales;
+        actividades.slice(0, maxActividadesCulturales).forEach((actividad) => {
+            if (actividad?.categoria === 'CULTURALES') {
+                worksheet.getCell(`A${actividadRowCulturales}`).value = actividad?.subCategoria || '';
+                worksheet.getCell(`D${actividadRowCulturales}`).value = actividad?.horasSemanales || '';
+                worksheet.getCell(`E${actividadRowCulturales}`).value = actividad?.horasSemestre || '';
+                worksheet.getCell(`F${actividadRowCulturales}`).value = actividad?.descripcion || '';
+                worksheet.getCell(`H${actividadRowCulturales}`).value = actividad?.producto || '';
+                actividadRowCulturales++; // Solo avanza si se insertó una actividad válida
+            }
+        });
+
+        const startRowActividadesAdministrativa = 70;
+        const maxActividadesAdministrativa = 79;
+
+        let actividadRowAdministrativa = startRowActividadesAdministrativa;
+        actividades.slice(0, maxActividadesAdministrativa).forEach((actividad) => {
+            if (actividad?.categoria === 'ADMINISTRATIVA') {
+                worksheet.getCell(`A${actividadRowAdministrativa}`).value = actividad?.subCategoria || '';
+                worksheet.getCell(`D${actividadRowAdministrativa}`).value = actividad?.horasSemanales || '';
+                worksheet.getCell(`E${actividadRowAdministrativa}`).value = actividad?.horasSemestre || '';
+                worksheet.getCell(`F${actividadRowAdministrativa}`).value = actividad?.descripcion || '';
+                worksheet.getCell(`H${actividadRowAdministrativa}`).value = actividad?.producto || '';
+                actividadRowAdministrativa++; // Solo avanza si se insertó una actividad válida
+            }
+        });
+
+        const buffer = await workbook.xlsx.writeBuffer();
+        // Usa el nombre del archivo ingresado, asegurando extensión .xlsx
+        let nombreFinal = nombreArchivo.trim();
+        if (!nombreFinal.toLowerCase().endsWith('.xlsx')) {
+            nombreFinal += '.xlsx';
+        }
+        saveAs(new Blob([buffer]), nombreFinal);
+    };
+
+    return (
+        <div className="d-flex align-items-center mb-2">
+            <input
+                type="text"
+                className="form-control me-2"
+                style={{ maxWidth: 250 }}
+                value={nombreArchivo}
+                onChange={e => setNombreArchivo(e.target.value)}
+                placeholder="Nombre del archivo"
+            />
+            <button className="btn btn-success" onClick={handleExport}>
+                <i className="fas fa-file-excel"></i> Exportar Excel
+            </button>
+        </div>
+    );
+}
+
 export default function HomeFormulario() {
     // Estado para el nombre del archivo
     const [nombreArchivo, setNombreArchivo] = useState('Agenda_Completada.xlsx');
-
-    function ExportarExcel() {
-        const handleExport = async () => {
-
-            const response = await fetch('/Plantilla_Agenda.xlsx');
-            const arrayBuffer = await response.arrayBuffer();
-
-            const workbook = new ExcelJS.Workbook();
-            await workbook.xlsx.load(arrayBuffer);
-
-            const worksheet = workbook.getWorksheet(1);
-
-            worksheet.getCell('C2').value = clases[0]?.agendaId.name || '';
-            worksheet.getCell('E4').value = `VIGENCIA: ${clases[0]?.agendaId.fechaInicio || ''}`;
-            worksheet.getCell('C6').value = clases[0]?.agendaId.usuarioId.name || '';
-            worksheet.getCell('B7').value = clases[0]?.agendaId.facultad || '';
-            worksheet.getCell('F7').value = clases[0]?.agendaId.programa || '';
-            worksheet.getCell('B8').value = clases[0]?.agendaId.fechaFin || '';
-            worksheet.getCell('F8').value = clases[0]?.agendaId.periodo || '';
-
-            // Agregar Clases
-            const startRowClases = 14;
-            const maxClases = 20;
-
-            clases.slice(0, maxClases).forEach((clase, idx) => {
-                const row = startRowClases + idx;
-                worksheet.getCell(`A${row}`).value = clase?.name || '';
-                worksheet.getCell(`C${row}`).value = clase?.programa || '';
-                worksheet.getCell(`D${row}`).value = clase?.grupo || '';
-                worksheet.getCell(`E${row}`).value = clase?.sede || '';
-                worksheet.getCell(`F${row}`).value = clase?.horasSemanales || '';
-                worksheet.getCell(`H${row}`).value = clase?.horasSemestre || '';
-            });
-
-
-            // Agregar Actividades
-            const startRowActividadesAcadémicas = 29;
-            const maxActividadesAcadémicas = 33;
-
-            let actividadRowAcadémicas = startRowActividadesAcadémicas;
-            actividades.slice(0, maxActividadesAcadémicas).forEach((actividad) => {
-                if (actividad?.categoria === 'ACADÉMICAS') {
-                    worksheet.getCell(`A${actividadRowAcadémicas}`).value = actividad?.subCategoria || '';
-                    worksheet.getCell(`D${actividadRowAcadémicas}`).value = actividad?.horasSemanales || '';
-                    worksheet.getCell(`E${actividadRowAcadémicas}`).value = actividad?.horasSemestre || '';
-                    worksheet.getCell(`F${actividadRowAcadémicas}`).value = actividad?.descripcion || '';
-                    worksheet.getCell(`H${actividadRowAcadémicas}`).value = actividad?.producto || '';
-                    actividadRowAcadémicas++; // Solo avanza si se insertó una actividad válida
-                }
-            });
-
-            const startRowActividadesFormativas = 35;
-            const maxActividadesFormativas = 39;
-
-            let actividadRowFormativas = startRowActividadesFormativas;
-            actividades.slice(0, maxActividadesFormativas).forEach((actividad) => {
-                if (actividad?.categoria === 'FORMATIVAS') {
-                    worksheet.getCell(`A${actividadRowFormativas}`).value = actividad?.subCategoria || '';
-                    worksheet.getCell(`D${actividadRowFormativas}`).value = actividad?.horasSemanales || '';
-                    worksheet.getCell(`E${actividadRowFormativas}`).value = actividad?.horasSemestre || '';
-                    worksheet.getCell(`F${actividadRowFormativas}`).value = actividad?.descripcion || '';
-                    worksheet.getCell(`H${actividadRowFormativas}`).value = actividad?.producto || '';
-                    actividadRowFormativas++; // Solo avanza si se insertó una actividad válida
-                }
-            });
-
-            const startRowActividadesCientíficas = 44;
-            const maxActividadesCientíficas = 48;
-
-            let actividadRowCientíficas = startRowActividadesCientíficas;
-            actividades.slice(0, maxActividadesCientíficas).forEach((actividad) => {
-                if (actividad?.categoria === 'CIENTÍFICAS') {
-                    worksheet.getCell(`A${actividadRowCientíficas}`).value = actividad?.subCategoria || '';
-                    worksheet.getCell(`D${actividadRowCientíficas}`).value = actividad?.horasSemanales || '';
-                    worksheet.getCell(`E${actividadRowCientíficas}`).value = actividad?.horasSemestre || '';
-                    worksheet.getCell(`F${actividadRowCientíficas}`).value = actividad?.descripcion || '';
-                    worksheet.getCell(`H${actividadRowCientíficas}`).value = actividad?.producto || '';
-                    actividadRowCientíficas++; // Solo avanza si se insertó una actividad válida
-                }
-            });
-
-            const startRowActividadesExtensión = 54;
-            const maxActividadesExtensión = 58;
-
-            let actividadRowExtensión = startRowActividadesExtensión;
-            actividades.slice(0, maxActividadesExtensión).forEach((actividad) => {
-                if (actividad?.categoria === 'EXTENSIÓN') {
-                    worksheet.getCell(`A${actividadRowExtensión}`).value = actividad?.subCategoria || '';
-                    worksheet.getCell(`D${actividadRowExtensión}`).value = actividad?.horasSemanales || '';
-                    worksheet.getCell(`E${actividadRowExtensión}`).value = actividad?.horasSemestre || '';
-                    worksheet.getCell(`F${actividadRowExtensión}`).value = actividad?.descripcion || '';
-                    worksheet.getCell(`H${actividadRowExtensión}`).value = actividad?.producto || '';
-                    actividadRowExtensión++; // Solo avanza si se insertó una actividad válida
-                }
-            });
-
-            const startRowActividadesCulturales = 60;
-            const maxActividadesCulturales = 64;
-
-            let actividadRowCulturales = startRowActividadesCulturales;
-            actividades.slice(0, maxActividadesCulturales).forEach((actividad) => {
-                if (actividad?.categoria === 'CULTURALES') {
-                    worksheet.getCell(`A${actividadRowCulturales}`).value = actividad?.subCategoria || '';
-                    worksheet.getCell(`D${actividadRowCulturales}`).value = actividad?.horasSemanales || '';
-                    worksheet.getCell(`E${actividadRowCulturales}`).value = actividad?.horasSemestre || '';
-                    worksheet.getCell(`F${actividadRowCulturales}`).value = actividad?.descripcion || '';
-                    worksheet.getCell(`H${actividadRowCulturales}`).value = actividad?.producto || '';
-                    actividadRowCulturales++; // Solo avanza si se insertó una actividad válida
-                }
-            });
-
-            const startRowActividadesAdministrativa = 70;
-            const maxActividadesAdministrativa = 79;
-
-            let actividadRowAdministrativa = startRowActividadesAdministrativa;
-            actividades.slice(0, maxActividadesAdministrativa).forEach((actividad) => {
-                if (actividad?.categoria === 'ADMINISTRATIVA') {
-                    worksheet.getCell(`A${actividadRowAdministrativa}`).value = actividad?.subCategoria || '';
-                    worksheet.getCell(`D${actividadRowAdministrativa}`).value = actividad?.horasSemanales || '';
-                    worksheet.getCell(`E${actividadRowAdministrativa}`).value = actividad?.horasSemestre || '';
-                    worksheet.getCell(`F${actividadRowAdministrativa}`).value = actividad?.descripcion || '';
-                    worksheet.getCell(`H${actividadRowAdministrativa}`).value = actividad?.producto || '';
-                    actividadRowAdministrativa++; // Solo avanza si se insertó una actividad válida
-                }
-            });
-
-            const buffer = await workbook.xlsx.writeBuffer();
-            // Usa el nombre del archivo ingresado, asegurando extensión .xlsx
-            let nombreFinal = nombreArchivo.trim();
-            if (!nombreFinal.toLowerCase().endsWith('.xlsx')) {
-                nombreFinal += '.xlsx';
-            }
-            saveAs(new Blob([buffer]), nombreFinal);
-        };
-
-        return (
-            <div className="d-flex align-items-center mb-2">
-                <input
-                    type="text"
-                    className="form-control me-2"
-                    style={{ maxWidth: 250 }}
-                    value={nombreArchivo}
-                    onChange={e => setNombreArchivo(e.target.value)}
-                    placeholder="Nombre del archivo"
-                />
-                <button className="btn btn-success" onClick={handleExport}>
-                    <i className="fas fa-file-excel"></i> Exportar Excel
-                </button>
-            </div>
-        );
-    }
 
     const navigate = useNavigate();
     const { id } = useParams(); // Obtén el id del usuario y el id de la agenda desde la URL
@@ -226,7 +224,12 @@ export default function HomeFormulario() {
     return (
         <div className="container">
             <div className="d-flex justify-content-end mt-4 mb-2">
-                <ExportarExcel />
+                <ExportarExcel
+                    nombreArchivo={nombreArchivo}
+                    setNombreArchivo={setNombreArchivo}
+                    clases={clases}
+                    actividades={actividades}
+                />
             </div>
             {/* Tabla de Clases */}
             <div className="mb-5">

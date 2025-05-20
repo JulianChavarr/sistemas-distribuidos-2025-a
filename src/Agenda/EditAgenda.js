@@ -30,6 +30,9 @@ export default function EditAgenda() {
     const onInputChange = (e) => {
         const { name, value } = e.target;
 
+        // Campos que deben ser siempre mayúsculas
+        const camposMayusculas = ["name", "facultad", "programa", "periodo"];
+
         if (name === "usuarioId") {
             const parsedValue = parseInt(value, 10);
             setAgendas({
@@ -39,6 +42,8 @@ export default function EditAgenda() {
                     id: isNaN(parsedValue) ? 0 : parsedValue,
                 },
             });
+        } else if (camposMayusculas.includes(name)) {
+            setAgendas({ ...agendas, [name]: value.toUpperCase() });
         } else {
             setAgendas({ ...agendas, [name]: value });
         }
@@ -78,22 +83,18 @@ export default function EditAgenda() {
         const errores = {};
         if (!name) {
             errores.name = "El nombre de la agenda es obligatorio";
-        } else if (!/[A-Z]/.test(name)) {
-            errores.name = "Debe contener al menos una letra mayúscula";
-        } else if (!/[a-z]/.test(name)) {
-            errores.name = "Debe contener al menos una letra minúscula";
+        } else if (name !== name.toUpperCase()) {
+            errores.name = "El nombre de la agenda debe estar en mayúsculas";
         } else if (name.length < 3) {
             errores.name = "Debe tener al menos 3 caracteres";
-        } else if (name.length > 50) {
-            errores.name = "No puede tener más de 50 caracteres";
+        } else if (name.length > 20) {
+            errores.name = "No puede tener más de 20 caracteres";
         } else if (!name.trim()) {
             errores.name = "El nombre no puede ser solo espacios";
-        } else if (!/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/.test(name)) {
-            errores.name = "El nombre solo puede contener letras y espacios";
+        } else if (!/^[A-ZÁÉÍÓÚÑ\s]+$/.test(name)) {
+            errores.name = "El nombre solo puede contener letras mayúsculas y espacios";
         } else if (/\s{2,}/.test(name)) {
             errores.name = "El nombre no debe tener espacios dobles";
-        } else if (name === name.toUpperCase() || name === name.toLowerCase()) {
-            errores.name = "El nombre debe tener mayúsculas y minúsculas";
         }
         if (!facultad) {
             errores.facultad = "La facultad es obligatoria";
@@ -154,13 +155,6 @@ export default function EditAgenda() {
         } else if (new Date(fechaFin) < new Date()) {
             errores.fechaFin = "La fecha de fin no puede ser anterior a hoy";
         }
-        if (!usuarioId.id) {
-            errores.usuarioId = "El ID de usuario es obligatorio";
-        } else if (isNaN(usuarioId.id) || usuarioId.id <= 0) {
-            errores.usuarioId = "El ID de usuario debe ser un número positivo";
-        } else if (!Number.isInteger(Number(usuarioId.id))) {
-            errores.usuarioId = "El ID de usuario debe ser un número entero";
-        }
 
         return errores;
     };
@@ -188,6 +182,7 @@ export default function EditAgenda() {
                                         placeholder='Ingrese su ID de usuario'
                                         name='usuarioId'
                                         value={usuarioId.id || 0}
+                                        min={1}
                                         onChange={(e) => onInputChange(e)}
                                     />
                                     {errores.usuarioId && <div className="text-danger">{errores.usuarioId}</div>}

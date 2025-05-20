@@ -28,8 +28,10 @@ export default function AddAgenda() {
     const { usuarioId, name, facultad, programa, periodo, fechaInicio, fechaFin } = agendas;
 
     const onInputChange = (e) => {
-
         const { name, value } = e.target;
+
+        // Campos que deben ser siempre mayúsculas
+        const camposMayusculas = ["name", "facultad", "programa", "periodo"];
 
         if (name === "usuarioId") {
             const parsedValue = parseInt(value, 10);
@@ -37,35 +39,32 @@ export default function AddAgenda() {
                 ...agendas,
                 usuarioId: {
                     ...agendas.usuarioId,
-                    id: isNaN(parsedValue) ? 0 : parsedValue, // Actualiza solo el campo `id` dentro de `usuarioId`
+                    id: isNaN(parsedValue) ? 0 : parsedValue,
                 },
             });
+        } else if (camposMayusculas.includes(name)) {
+            setAgendas({ ...agendas, [name]: value.toUpperCase() });
         } else {
-            setAgendas({ ...agendas, [name]: value }); // Actualiza los campos de nivel superior
+            setAgendas({ ...agendas, [name]: value });
         }
-
     }
 
     const validar = () => {
         const errores = {};
         if (!name) {
             errores.name = "El nombre de la agenda es obligatorio";
-        } else if (!/[A-Z]/.test(name)) {
-            errores.name = "Debe contener al menos una letra mayúscula";
-        } else if (!/[a-z]/.test(name)) {
-            errores.name = "Debe contener al menos una letra minúscula";
+        } else if (name !== name.toUpperCase()) {
+            errores.name = "El nombre de la agenda debe estar en mayúsculas";
         } else if (name.length < 3) {
             errores.name = "Debe tener al menos 3 caracteres";
-        } else if (name.length > 50) {
-            errores.name = "No puede tener más de 50 caracteres";
+        } else if (name.length > 20) {
+            errores.name = "No puede tener más de 20 caracteres";
         } else if (!name.trim()) {
             errores.name = "El nombre no puede ser solo espacios";
-        } else if (!/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/.test(name)) {
-            errores.name = "El nombre solo puede contener letras y espacios";
+        } else if (!/^[A-ZÁÉÍÓÚÑ\s]+$/.test(name)) {
+            errores.name = "El nombre solo puede contener letras mayúsculas y espacios";
         } else if (/\s{2,}/.test(name)) {
             errores.name = "El nombre no debe tener espacios dobles";
-        } else if (name === name.toUpperCase() || name === name.toLowerCase()) {
-            errores.name = "El nombre debe tener mayúsculas y minúsculas";
         }
         if (!facultad) {
             errores.facultad = "La facultad es obligatoria";

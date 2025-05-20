@@ -91,8 +91,8 @@ export default function EditActividad() {
             errores.descripcion = "La descripción es obligatoria";
         } else if (descripcion.length < 3) {
             errores.descripcion = "Debe tener al menos 3 caracteres";
-        } else if (descripcion.length > 100) {
-            errores.descripcion = "No puede tener más de 100 caracteres";
+        } else if (descripcion.length > 255) {
+            errores.descripcion = "No puede tener más de 255 caracteres";
         } else if (!descripcion.trim()) {
             errores.descripcion = "La descripción no puede ser solo espacios";
         } else if (/\s{2,}/.test(descripcion)) {
@@ -105,8 +105,8 @@ export default function EditActividad() {
             errores.producto = "El producto es obligatorio";
         } else if (producto.length < 3) {
             errores.producto = "Debe tener al menos 3 caracteres";
-        } else if (producto.length > 100) {
-            errores.producto = "No puede tener más de 100 caracteres";
+        } else if (producto.length > 255) {
+            errores.producto = "No puede tener más de 255 caracteres";
         } else if (!producto.trim()) {
             errores.producto = "El producto no puede ser solo espacios";
         } else if (/\s{2,}/.test(producto)) {
@@ -185,6 +185,7 @@ export default function EditActividad() {
                                         placeholder='Ingrese el ID de la agenda'
                                         name='agendaId'
                                         value={agendaId.id || 0}
+                                        min={1}
                                         onChange={(e) => onInputChange(e)}
                                     />
                                     {errores.agendaId && <div className="text-danger">{errores.agendaId}</div>}
@@ -233,6 +234,7 @@ export default function EditActividad() {
                                         placeholder='Ingrese las horas semanales'
                                         name='horasSemanales'
                                         value={horasSemanales}
+                                        min={0} // <-- Esto evita que el usuario seleccione un valor menor a 0
                                         onChange={(e) => onInputChange(e)}
                                     />
                                     {errores.horasSemanales && <div className="text-danger">{errores.horasSemanales}</div>}
