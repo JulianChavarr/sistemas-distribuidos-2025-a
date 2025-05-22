@@ -1,8 +1,8 @@
 import axios from 'axios';
 import React, { useEffect, useState, useCallback } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
-export default function ViewAgenda() {
+export default function ViewAgendasEliminadas() {
     const [agendas, setAgendas] = useState({
         status: true,
         codeAuth: true,
@@ -30,18 +30,6 @@ export default function ViewAgenda() {
     useEffect(() => {
         loadAgenda();
     }, [loadAgenda]);
-
-    const deleteAgenda = async (id) => {
-        if (window.confirm('¿Estás seguro de que deseas eliminar esta agenda? Esta acción no se puede deshacer.')) {
-            try {
-                await axios.delete(`http://54.165.104.165:8080/api/agenda/${id}`);
-                navigate(-1);
-            } catch (error) {
-                console.error('Error al eliminar la agenda:', error);
-                alert('No se pudo eliminar la agenda. Inténtalo de nuevo.');
-            }
-        }
-    };
 
     return (
         <div>
@@ -105,18 +93,6 @@ export default function ViewAgenda() {
                                     </tbody>
                                 </table>
                             </div>
-                        </div>
-                        <div className="text-center">
-                            <Link className='btn btn-outline-warning my-2 mx-2' to={`/EditAgenda/${id}`}>
-                                <i className="fas fa-edit"></i> Editar
-                            </Link>
-                            <button
-                                type='button'
-                                className='btn btn-outline-danger my-2 mx-2'
-                                onClick={() => deleteAgenda(id)}
-                            >
-                                <i className="fas fa-trash-alt"></i> Eliminar
-                            </button>
                         </div>
                     </div>
                 </div>

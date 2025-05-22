@@ -1,20 +1,21 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 
-export default function HomeAgenda() {
+export default function AgendasEliminadas() {
     const [agendas, setAgendas] = useState([]);
     const { id } = useParams();
+    const navigate = useNavigate();
 
     const loadAgendas = useCallback(async () => {
         try {
             const result = await axios.get("http://54.165.104.165:8080/api/agenda");
             if (Array.isArray(result.data.data)) {
-                // Filtrar por usuario y solo agendas no eliminadas
+                // Filtrar por usuario y solo agendas eliminadas
                 const filteredAgendas = result.data.data.filter(agenda => 
                     agenda.usuarioId.id === parseInt(id, 10) && 
-                    agenda.deletedAt == null && 
-                    agenda.deletedBy == null
+                    agenda.deletedAt != null && 
+                    agenda.deletedBy != null
                 );
                 setAgendas(filteredAgendas);
             } else {
@@ -29,27 +30,17 @@ export default function HomeAgenda() {
     useEffect(() => {
         loadAgendas();
     }, [loadAgendas]);
-    
-    const deleteAgendas = async (id) => {
-        console.log("ID a eliminar:", id);
-        try {
-            await axios.delete(`http://54.165.104.165:8080/api/agenda/${id}`);
-            loadAgendas();
-        } catch (error) {
-            console.error("Error al eliminar la agenda:", error);
-            alert("No se pudo eliminar la agenda. Inténtalo de nuevo.");
-        }
-    };
 
     return (
         <div className='container'>
-            <div className='d-flex justify-content-between py-3'>
-                <Link className="btn btn-outline-danger" to={`/AgendasEliminadas/${id}`}>
-                    <i className="fas fa-trash"></i> Agendas Eliminadas
-                </Link>
-                <Link className="btn btn-success me-2" to={`/AddAgenda/${id}`}>
-                    <i className="fas fa-calendar-plus"></i> Nueva Agenda
-                </Link>
+            <div className='d-flex justify-content-end py-3'>
+                <button
+                    type='button'
+                    className='btn btn-primary me-2'
+                    onClick={() => navigate(-1)}
+                >
+                    <i className="fas fa-arrow-left"></i> Volver
+                </button>
             </div>
             <div className='py-0'>
                 <table className="table table-hover border shadow">
@@ -60,7 +51,7 @@ export default function HomeAgenda() {
                             <th scope="col">Nombre</th>
                             <th scope="col">Periodo</th>
                             <th scope="col">Creación</th>
-                            <th scope="col">Finalización</th>
+                            <th scope="col">Eliminación</th>
                             <th scope="col" style={{ width: '150px', textAlign: 'center' }}>Formulario</th>
                             <th scope="col" style={{ width: '200px', textAlign: 'center' }}>Acción</th>
                         </tr>
@@ -73,25 +64,16 @@ export default function HomeAgenda() {
                                 <td>{agenda.name}</td>
                                 <td>{agenda.periodo}</td>
                                 <td>{agenda.fechaInicio}</td>
-                                <td>{agenda.fechaFin}</td>
+                                <td>{agenda.deletedAt}</td>
                                 <td style={{ width: '200px', textAlign: 'center' }}>
-                                    <Link className="btn btn-outline-success btn-sm" to={`/HomeFormulario/${agenda.id}`}>
-                                        <i className="fas fa-edit"></i> Editar Formulario
+                                    <Link className="btn btn-outline-success btn-sm" to={`/FormulariosEliminados/${agenda.id}`}>
+                                        <i className="fas fa-edit"></i> Ver Formulario
                                     </Link>
                                 </td>
                                 <td style={{ width: '300px', textAlign: 'center' }}>
-                                    <Link className="btn btn-outline-primary btn-sm mx-1" to={`/ViewAgenda/${agenda.id}`}>
+                                    <Link className="btn btn-outline-primary btn-sm mx-1" to={`/ViewAgendasEliminadas/${agenda.id}`}>
                                         <i className="fas fa-eye"></i> Ver
                                     </Link>
-                                    <Link className="btn btn-outline-warning btn-sm mx-1" to={`/EditAgenda/${agenda.id}`}>
-                                        <i className="fas fa-edit"></i> Editar
-                                    </Link>
-                                    <button
-                                        className="btn btn-outline-danger btn-sm mx-1"
-                                        onClick={() => deleteAgendas(agenda.id)}
-                                    >
-                                        <i className="fas fa-trash-alt"></i> Eliminar
-                                    </button>
                                 </td>
                             </tr>
                         ))}

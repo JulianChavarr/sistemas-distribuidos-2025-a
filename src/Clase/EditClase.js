@@ -28,8 +28,6 @@ export default function EditClase() {
 
     const onInputChange = (e) => {
         const { name, value } = e.target;
-
-        // Campos que deben ser siempre mayúsculas
         const camposMayusculas = ["name", "programa", "sede"];
 
         if (name === "agendaId") {
@@ -60,8 +58,7 @@ export default function EditClase() {
     useEffect(() => {
         loadClase();
     }, [loadClase]);
-
-    // Calcula horasSemestre automáticamente cuando cambian las horasSemanales
+    
     useEffect(() => {
         setClases((prev) => ({
             ...prev,
@@ -243,7 +240,7 @@ export default function EditClase() {
                                         placeholder='Ingrese el grupo'
                                         name='grupo'
                                         value={grupo}
-                                        min={1} // <-- Esto evita que el usuario seleccione un valor menor a 1
+                                        min={1}
                                         onChange={(e) => onInputChange(e)}
                                     />
                                     {errores.grupo && <div className="text-danger">{errores.grupo}</div>}

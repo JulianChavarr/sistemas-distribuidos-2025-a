@@ -1,8 +1,8 @@
 import axios from 'axios';
 import React, { useEffect, useState, useCallback } from 'react';
-import { Link, useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
-export default function ViewClase() {
+export default function ViewClasesEliminadas() {
     const [clases, setClases] = useState({
         status: true,
         codeAuth: true,
@@ -35,18 +35,6 @@ export default function ViewClase() {
     useEffect(() => {
         loadClase();
     }, [loadClase]);
-
-    const deleteClase = async (id) => {
-        if (window.confirm('¿Estás seguro de que deseas eliminar esta clase? Esta acción no se puede deshacer.')) {
-            try {
-                await axios.delete(`http://54.165.104.165:8080/api/clase/${id}`);
-                navigate(-1);
-            } catch (error) {
-                console.error('Error al eliminar la clase:', error);
-                alert('No se pudo eliminar la clase. Inténtalo de nuevo.');
-            }
-        }
-    };
 
     return (
         <div>
@@ -106,18 +94,6 @@ export default function ViewClase() {
                                     </tbody>
                                 </table>
                             </div>
-                        </div>
-                        <div className="text-center">
-                            <Link className='btn btn-outline-warning my-2 mx-2' to={`/EditClase/${id}`}>
-                                <i className="fas fa-edit"></i> Editar
-                            </Link>
-                            <button
-                                type='button'
-                                className='btn btn-outline-danger my-2 mx-2'
-                                onClick={() => deleteClase(id)}
-                            >
-                                <i className="fas fa-trash-alt"></i> Eliminar
-                            </button>
                         </div>
                     </div>
                 </div>

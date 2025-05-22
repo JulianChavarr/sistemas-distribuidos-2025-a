@@ -4,13 +4,13 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 export default function AddActividad() {
     let navigate = useNavigate();
-    const { id } = useParams(); // Obtiene el id de la agenda desde la URL
+    const { id } = useParams();
 
     const [actividades, setActividades] = useState({
         status: true,
         codeAuth: true,
         agendaId: {
-            id: parseInt(id, 10) || 0, // Asigna el id de la agenda al estado inicial
+            id: parseInt(id, 10) || 0,
             status: true,
             codeAuth: true
         },
@@ -43,7 +43,6 @@ export default function AddActividad() {
         }
     };
 
-    // Calcula horasSemestre automáticamente
     useEffect(() => {
         setActividades((prev) => ({
             ...prev,
@@ -136,7 +135,7 @@ export default function AddActividad() {
         }
         try {
             await axios.post("http://54.165.104.165:8080/api/actividad", actividades);
-            navigate(`/HomeFormulario/${agendaId.id}`); // Redirige a la página de inicio de formulario
+            navigate(`/HomeFormulario/${agendaId.id}`);
         } catch (error) {
             console.error("Error al registrar la actividad:", error);
         }
@@ -199,7 +198,7 @@ export default function AddActividad() {
                                         placeholder='Ingrese las horas semanales'
                                         name='horasSemanales'
                                         value={horasSemanales}
-                                        min={0} // <-- Esto evita que el usuario seleccione un valor menor a 0
+                                        min={0}
                                         onChange={(e) => onInputChange(e)}
                                     />
                                     {errores.horasSemanales && <div className="text-danger">{errores.horasSemanales}</div>}

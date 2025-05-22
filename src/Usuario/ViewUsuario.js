@@ -25,17 +25,38 @@ export default function ViewUsuario() {
         loadUsuario();
     }, [loadUsuario]);
 
+    const deleteUsuario = async (id) => {
+        if (window.confirm('¿Estás seguro de que deseas eliminar tu usuario? Esta acción no se puede deshacer.')) {
+            try {
+                await axios.delete(`http://54.165.104.165:8080/api/usuario/${id}`);
+                sessionStorage.removeItem('userId');
+                navigate('/');
+            } catch (error) {
+                console.error('Error al eliminar el usuario:', error);
+                alert('No se pudo eliminar el usuario. Inténtalo de nuevo.');
+            }
+        }
+    };
+
     return (
         <div>
             <div className='container'>
                 <div className='row justify-content-center'>
-                    <div className='col-md-8 border rounded p-4 mt-2 shadow' style={{ backgroundColor: '#FFFFFF', color: '#000000' }}>
+                    <div className='col-md-8 border rounded p-4 mt-2 shadow' style={{ backgroundColor: '#FFFFFF', color: '#000000', position: 'relative' }}>
+                        <button
+                            type='button'
+                            className='btn btn-outline-primary position-absolute'
+                            style={{ top: 20, right: 20, zIndex: 2 }}
+                            onClick={() => navigate(-1)}
+                        >
+                            <i className="fas fa-arrow-left"></i> Volver
+                        </button>
                         <h2 className='text-center m-4' style={{ color: '#212529' }}>
                             <i className="fas fa-user"></i> Detalles del Usuario
                         </h2>
                         <div className='card'>
                             <div className='card-header text-white text-center' style={{ backgroundColor: '#212529' }}>
-                                <strong><i className="fas fa-info-circle"></i> Detalles del Usuario ID #{id}</strong>
+                                <strong><i className="fas fa-info-circle"></i> Detalles del Usuario</strong>
                             </div>
                             <div className='card-body'>
                                 <table className='table table-hover table-bordered'>
@@ -80,10 +101,10 @@ export default function ViewUsuario() {
                             </Link>
                             <button
                                 type='button'
-                                className='btn btn-outline-primary mx-2'
-                                onClick={() => navigate(-1)}
+                                className='btn btn-outline-danger my-2 mx-2'
+                                onClick={() => deleteUsuario(id)}
                             >
-                                <i className="fas fa-arrow-left"></i> Regresar
+                                <i className="fas fa-trash-alt"></i> Eliminar
                             </button>
                         </div>
                     </div>

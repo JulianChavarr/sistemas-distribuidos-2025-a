@@ -4,13 +4,13 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 export default function AddClase() {
     let navigate = useNavigate();
-    const { id } = useParams(); // Obtiene el id de la agenda desde la URL
+    const { id } = useParams();
 
     const [clases, setClases] = useState({
         status: true,
         codeAuth: true,
         agendaId: {
-            id: parseInt(id, 10) || 0, // Asigna el id de la agenda al estado inicial
+            id: parseInt(id, 10) || 0,
             status: true,
             codeAuth: true
         },
@@ -28,8 +28,6 @@ export default function AddClase() {
 
     const onInputChange = (e) => {
         const { name, value } = e.target;
-
-        // Campos que deben ser siempre mayúsculas
         const camposMayusculas = ["name", "programa", "sede"];
 
         if (name === "agendaId") {
@@ -142,13 +140,12 @@ export default function AddClase() {
         }
         try {
             await axios.post("http://54.165.104.165:8080/api/clase", clases);
-            navigate(`/HomeFormulario/${agendaId.id}`); // Redirige a la página de inicio de formulario
+            navigate(`/HomeFormulario/${agendaId.id}`);
         } catch (error) {
             console.error("Error al registrar la clase:", error);
         }
     };
 
-    // Calcula horasSemestre automáticamente
     useEffect(() => {
         setClases((prev) => ({
             ...prev,
@@ -207,7 +204,7 @@ export default function AddClase() {
                                         placeholder='Ingrese el grupo'
                                         name='grupo'
                                         value={grupo}
-                                        min={1} // <-- Esto evita que el usuario seleccione un valor menor a 1
+                                        min={1}
                                         onChange={(e) => onInputChange(e)}
                                     />
                                     {errores.grupo && <div className="text-danger">{errores.grupo}</div>}

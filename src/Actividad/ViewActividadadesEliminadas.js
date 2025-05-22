@@ -1,8 +1,8 @@
 import axios from 'axios';
 import React, { useEffect, useState, useCallback } from 'react';
-import { Link, useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
-export default function ViewActividad() {
+export default function ViewActividadesEliminadas() {
     const [actividades, setActividades] = useState({
         status: true,
         codeAuth: true,
@@ -35,18 +35,6 @@ export default function ViewActividad() {
     useEffect(() => {
         loadActividad();
     }, [loadActividad]);
-
-    const deleteActividad = async (id) => {
-        if (window.confirm('¿Estás seguro de que deseas eliminar esta actividad? Esta acción no se puede deshacer.')) {
-            try {
-                await axios.delete(`http://54.165.104.165:8080/api/actividad/${id}`);
-                navigate(-1);
-            } catch (error) {
-                console.error('Error al eliminar la actividad:', error);
-                alert('No se pudo eliminar la actividad. Inténtalo de nuevo.');
-            }
-        }
-    };
 
     return (
         <div className='container'>
@@ -105,18 +93,6 @@ export default function ViewActividad() {
                                 </tbody>
                             </table>
                         </div>
-                    </div>
-                    <div className="text-center">
-                        <Link className='btn btn-outline-warning my-2 mx-2' to={`/EditActividad/${id}`}>
-                            <i className="fas fa-edit"></i> Editar
-                        </Link>
-                        <button
-                            type='button'
-                            className='btn btn-outline-danger my-2 mx-2'
-                            onClick={() => deleteActividad(id)}
-                        >
-                            <i className="fas fa-trash-alt"></i> Eliminar
-                        </button>
                     </div>
                 </div>
             </div>

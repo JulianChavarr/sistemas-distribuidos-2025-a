@@ -19,10 +19,10 @@ export default function AddUsuario() {
     const { username, name, correo, password, rol } = usuarios;
 
     const [errores, setErrores] = useState({});
+    const [showPassword, setShowPassword] = useState(false);
 
     const onInputChange = (e) => {
         const { name, value } = e.target;
-        // Campos que deben ser siempre mayúsculas
         const camposMayusculas = ["name"];
 
         if (camposMayusculas.includes(name)) {
@@ -176,14 +176,25 @@ export default function AddUsuario() {
                                         <label htmlFor='Password' className='form-label' style={{ color: '#212529' }}>
                                             <i className="fas fa-key"></i> Contraseña
                                         </label>
-                                        <input
-                                            type='password'
-                                            className='form-control'
-                                            placeholder='Ingrese su contraseña'
-                                            name='password'
-                                            value={password}
-                                            onChange={(e) => onInputChange(e)}
-                                        />
+                                        <div className="input-group">
+                                            <input
+                                                type={showPassword ? 'text' : 'password'}
+                                                className='form-control'
+                                                placeholder='Ingrese su contraseña'
+                                                name='password'
+                                                value={password}
+                                                onChange={(e) => onInputChange(e)}
+                                            />
+                                            <button
+                                                type="button"
+                                                className="btn btn-outline-secondary"
+                                                tabIndex={-1}
+                                                onClick={() => setShowPassword((prev) => !prev)}
+                                                style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
+                                            >
+                                                <i className={showPassword ? "fas fa-eye-slash" : "fas fa-eye"}></i>
+                                            </button>
+                                        </div>
                                         {errores.password && <div className="text-danger">{errores.password}</div>}
                                     </div>
                                     <div className='mb-3'>

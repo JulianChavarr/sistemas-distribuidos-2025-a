@@ -29,8 +29,6 @@ export default function EditAgenda() {
 
     const onInputChange = (e) => {
         const { name, value } = e.target;
-
-        // Campos que deben ser siempre mayúsculas
         const camposMayusculas = ["name", "facultad", "programa", "periodo"];
 
         if (name === "usuarioId") {
@@ -66,7 +64,6 @@ export default function EditAgenda() {
     };
 
     const loadAgenda = useCallback(async () => {
-        console.log("ID enviado:", id);
         try {
             const result = await axios.get(`http://54.165.104.165:8080/api/agenda/${id}`);
             setAgendas(result.data.data);

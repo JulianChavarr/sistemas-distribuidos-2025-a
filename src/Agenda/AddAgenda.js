@@ -29,8 +29,6 @@ export default function AddAgenda() {
 
     const onInputChange = (e) => {
         const { name, value } = e.target;
-
-        // Campos que deben ser siempre mayúsculas
         const camposMayusculas = ["name", "facultad", "programa", "periodo"];
 
         if (name === "usuarioId") {

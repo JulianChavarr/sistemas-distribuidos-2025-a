@@ -4,7 +4,6 @@ import axios from 'axios';
 import ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
 
-// Mueve ExportarExcel FUERA del componente principal
 function ExportarExcel({ nombreArchivo, setNombreArchivo, clases, actividades }) {
     const handleExport = async () => {
         const response = await fetch('/Plantilla_Agenda.xlsx');
@@ -21,7 +20,6 @@ function ExportarExcel({ nombreArchivo, setNombreArchivo, clases, actividades })
         worksheet.getCell('B8').value = clases[0]?.agendaId.fechaFin || '';
         worksheet.getCell('F8').value = clases[0]?.agendaId.periodo || '';
 
-        // Agregar Clases
         const startRowClases = 14;
         const maxClases = 24;
 
@@ -35,8 +33,6 @@ function ExportarExcel({ nombreArchivo, setNombreArchivo, clases, actividades })
             worksheet.getCell(`H${row}`).value = clase?.horasSemestre || '';
         });
 
-
-        // Agregar Actividades
         const startRowActividadesAcadémicas = 29;
         const maxActividadesAcadémicas = 33;
 
@@ -48,7 +44,7 @@ function ExportarExcel({ nombreArchivo, setNombreArchivo, clases, actividades })
                 worksheet.getCell(`E${actividadRowAcadémicas}`).value = actividad?.horasSemestre || '';
                 worksheet.getCell(`F${actividadRowAcadémicas}`).value = actividad?.descripcion || '';
                 worksheet.getCell(`H${actividadRowAcadémicas}`).value = actividad?.producto || '';
-                actividadRowAcadémicas++; // Solo avanza si se insertó una actividad válida
+                actividadRowAcadémicas++;
             }
         });
 
@@ -63,7 +59,7 @@ function ExportarExcel({ nombreArchivo, setNombreArchivo, clases, actividades })
                 worksheet.getCell(`E${actividadRowFormativas}`).value = actividad?.horasSemestre || '';
                 worksheet.getCell(`F${actividadRowFormativas}`).value = actividad?.descripcion || '';
                 worksheet.getCell(`H${actividadRowFormativas}`).value = actividad?.producto || '';
-                actividadRowFormativas++; // Solo avanza si se insertó una actividad válida
+                actividadRowFormativas++;
             }
         });
 
@@ -78,7 +74,7 @@ function ExportarExcel({ nombreArchivo, setNombreArchivo, clases, actividades })
                 worksheet.getCell(`E${actividadRowCientíficas}`).value = actividad?.horasSemestre || '';
                 worksheet.getCell(`F${actividadRowCientíficas}`).value = actividad?.descripcion || '';
                 worksheet.getCell(`H${actividadRowCientíficas}`).value = actividad?.producto || '';
-                actividadRowCientíficas++; // Solo avanza si se insertó una actividad válida
+                actividadRowCientíficas++;
             }
         });
 
@@ -93,7 +89,7 @@ function ExportarExcel({ nombreArchivo, setNombreArchivo, clases, actividades })
                 worksheet.getCell(`E${actividadRowExtensión}`).value = actividad?.horasSemestre || '';
                 worksheet.getCell(`F${actividadRowExtensión}`).value = actividad?.descripcion || '';
                 worksheet.getCell(`H${actividadRowExtensión}`).value = actividad?.producto || '';
-                actividadRowExtensión++; // Solo avanza si se insertó una actividad válida
+                actividadRowExtensión++;
             }
         });
 
@@ -108,7 +104,7 @@ function ExportarExcel({ nombreArchivo, setNombreArchivo, clases, actividades })
                 worksheet.getCell(`E${actividadRowCulturales}`).value = actividad?.horasSemestre || '';
                 worksheet.getCell(`F${actividadRowCulturales}`).value = actividad?.descripcion || '';
                 worksheet.getCell(`H${actividadRowCulturales}`).value = actividad?.producto || '';
-                actividadRowCulturales++; // Solo avanza si se insertó una actividad válida
+                actividadRowCulturales++;
             }
         });
 
@@ -123,12 +119,11 @@ function ExportarExcel({ nombreArchivo, setNombreArchivo, clases, actividades })
                 worksheet.getCell(`E${actividadRowAdministrativa}`).value = actividad?.horasSemestre || '';
                 worksheet.getCell(`F${actividadRowAdministrativa}`).value = actividad?.descripcion || '';
                 worksheet.getCell(`H${actividadRowAdministrativa}`).value = actividad?.producto || '';
-                actividadRowAdministrativa++; // Solo avanza si se insertó una actividad válida
+                actividadRowAdministrativa++;
             }
         });
 
         const buffer = await workbook.xlsx.writeBuffer();
-        // Usa el nombre del archivo ingresado, asegurando extensión .xlsx
         let nombreFinal = nombreArchivo.trim();
         if (!nombreFinal.toLowerCase().endsWith('.xlsx')) {
             nombreFinal += '.xlsx';
@@ -154,11 +149,11 @@ function ExportarExcel({ nombreArchivo, setNombreArchivo, clases, actividades })
 }
 
 export default function HomeFormulario() {
-    // Estado para el nombre del archivo
+
     const [nombreArchivo, setNombreArchivo] = useState('Agenda_Completada.xlsx');
 
     const navigate = useNavigate();
-    const { id } = useParams(); // Obtén el id del usuario y el id de la agenda desde la URL
+    const { id } = useParams();
 
     // Estados y funciones para HomeClase
     const [clases, setClases] = useState([]);
@@ -166,17 +161,19 @@ export default function HomeFormulario() {
         try {
             const result = await axios.get("http://54.165.104.165:8080/api/clase");
             if (Array.isArray(result.data.data)) {
-                // Filtrar clases por usuarioId y agendaId
-                const filteredClases = result.data.data.filter(clase => clase.agendaId.id === parseInt(id, 10));
+                // Filtrar clases por agendaId y que no estén eliminadas
+                const filteredClases = result.data.data.filter(clase =>
+                    clase.agendaId.id === parseInt(id, 10) &&
+                    clase.deletedAt === null && clase.deletedBy === null
+                );
                 setClases(filteredClases);
-                console.log(filteredClases);
             } else {
                 console.error("API did not return an array:", result.data);
-                setClases([]); // Fallback to an empty array
+                setClases([]);
             }
         } catch (error) {
             console.error("Error fetching classes:", error);
-            setClases([]); // Fallback to an empty array in case of error
+            setClases([]);
         }
     }, [id]);
     const deleteClases = async (claseId) => {
@@ -194,17 +191,19 @@ export default function HomeFormulario() {
         try {
             const result = await axios.get("http://54.165.104.165:8080/api/actividad");
             if (Array.isArray(result.data.data)) {
-                // Filtrar actividades por usuarioId y agendaId
-                const filteredActividades = result.data.data.filter(actividad => actividad.agendaId.id === parseInt(id, 10));
+                // Filtrar actividades por agendaId y que no estén eliminadas
+                const filteredActividades = result.data.data.filter(actividad =>
+                    actividad.agendaId.id === parseInt(id, 10) &&
+                    actividad.deletedAt === null && actividad.deletedBy === null
+                );
                 setActividades(filteredActividades);
-                console.log(filteredActividades);
             } else {
                 console.error("API did not return an array:", result.data);
-                setActividades([]); // Fallback to an empty array
+                setActividades([]);
             }
         } catch (error) {
             console.error("Error fetching activities:", error);
-            setActividades([]); // Fallback to an empty array in case of error
+            setActividades([]);
         }
     }, [id]);
     const deleteActividades = async (actividadId) => {
@@ -219,7 +218,7 @@ export default function HomeFormulario() {
     useEffect(() => {
         loadClases();
         loadActividades();
-    }, [id, loadClases, loadActividades]); // Ejecuta las funciones cuando cambien el id del usuario o el id de la agenda
+    }, [id, loadClases, loadActividades]);
 
     return (
         <div className="container">
@@ -245,10 +244,10 @@ export default function HomeFormulario() {
                         {/* Botón Volver */}
                         <button
                             type='button'
-                            className='btn btn-primary mx-2'
-                            onClick={() => navigate(`/HomeAgenda/${actividades[0]?.agendaId?.usuarioId?.id || id}`)} // Redirige a HomeAgenda con el id del usuario
+                            className='btn btn-primary me-2'
+                            onClick={() => navigate(-1)}
                         >
-                            <i className="fas fa-arrow-circle-left"></i> Volver
+                            <i className="fas fa-arrow-left"></i> Volver
                         </button>
                     </div>
                 </div>

@@ -154,7 +154,6 @@ export default function EditActividad() {
         loadActividad();
     }, [loadActividad]);
 
-    // Calcula horasSemestre automáticamente cuando cambian las horasSemanales
     useEffect(() => {
         setActividades((prev) => ({
             ...prev,
@@ -234,7 +233,7 @@ export default function EditActividad() {
                                         placeholder='Ingrese las horas semanales'
                                         name='horasSemanales'
                                         value={horasSemanales}
-                                        min={0} // <-- Esto evita que el usuario seleccione un valor menor a 0
+                                        min={0}
                                         onChange={(e) => onInputChange(e)}
                                     />
                                     {errores.horasSemanales && <div className="text-danger">{errores.horasSemanales}</div>}
